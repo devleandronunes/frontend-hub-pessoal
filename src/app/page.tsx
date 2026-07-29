@@ -8,6 +8,14 @@ import { getToken, clearToken } from "@/lib/auth-token";
 import { Button } from "@/components/ui/button";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+  EmptyDescription,
+} from "@/components/ui/empty";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function HomePage() {
   const router = useRouter();
@@ -58,21 +66,29 @@ export default function HomePage() {
   if (authStatus === "checking") {
     return (
       <main className="flex min-h-screen items-center justify-center">
-        <p>Verificando sessão...</p>
+        <p>Checking session...</p>
       </main>
     );
   }
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center gap-4 p-8">
-      <Card className="w-full max-w-sm">
+      <Card className="w-full max-w-sm [--card-spacing:--spacing(5)]">
         <CardHeader>
           <CardTitle>Hub Pessoal</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-3">
-          <p>Bem-vindo, {username}</p>
+          <p>Welcome, {username}</p>
           {status === "loading" && (
-            <p>Verificando a API... (pode demorar no 1º acesso)</p>
+            <Empty>
+              <EmptyHeader>
+                <EmptyMedia variant="icon">
+                  <Spinner />
+                </EmptyMedia>
+                <EmptyTitle>Checking the API</EmptyTitle>
+                <EmptyDescription>This may take a while on first access.</EmptyDescription>
+              </EmptyHeader>
+            </Empty>
           )}
           {status === "ok" && (
             <Alert>
@@ -81,11 +97,11 @@ export default function HomePage() {
           )}
           {status === "error" && (
             <Alert variant="destructive">
-              <AlertDescription>Falha ao contatar a API: {detail}</AlertDescription>
+              <AlertDescription>Failed to reach the API: {detail}</AlertDescription>
             </Alert>
           )}
-          <Button onClick={handleLogout} variant="outline">
-            Sair
+          <Button onClick={handleLogout}>
+            Log out
           </Button>
         </CardContent>
       </Card>

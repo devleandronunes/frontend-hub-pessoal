@@ -10,7 +10,7 @@ export async function login(username: string, password: string): Promise<string>
     });
 
     if (!response.ok) {
-        throw new Error("Usuário ou senha inválidos.");
+        throw new Error("Invalid username or password.");
     }
 
     const data = await response.json();
@@ -20,12 +20,16 @@ export async function login(username: string, password: string): Promise<string>
 export async function getMe(): Promise<{username: string}>{
     const token = getToken();
     if (!token) {
-        throw new Error("Não autenticado");
+        throw new Error("Not authenticated");
     }
 
     const response = await fetch(`${API_URL}/auth/me`, {
         headers: { Authorization: `Bearer ${token}` },
     });
+
+    if (!response.ok) {
+        throw new Error("Session expired.");
+    }
 
     return response.json();
 }

@@ -7,8 +7,9 @@ import { setToken } from "@/lib/auth-token";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -27,50 +28,63 @@ export default function LoginPage() {
       setToken(token);
       router.push("/");
     } catch {
-      setError("Usuário ou senha inválidos.");
+      setError("Invalid username or password.");
     } finally {
       setLoading(false);
     }
   }
 
+  if (loading) {
+    return (
+      <main className="mx-auto grid w-full max-w-sm min-h-screen items-center justify-center p-4">
+        <Spinner className="size-8" />
+      </main>
+    );
+  }
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-8">
-      <Card className="w-full max-w-xs">
+    <main className="mx-auto grid w-full max-w-sm min-h-screen items-center p-4">
+      <Card className="[--card-spacing:--spacing(7)]">
         <CardHeader>
-          <CardTitle>Entrar</CardTitle>
+          <CardTitle>Login to your account</CardTitle>
+          <CardDescription>Enter your username below to login to your account</CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-            <div className="flex flex-col gap-1">
-              <Label htmlFor="username">Usuário</Label>
-              <Input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
+        <form onSubmit={handleSubmit} className="flex flex-col gap-(--card-spacing)">
+          <CardContent>
+            <div className="flex flex-col gap-6">
+              <div className="grid gap-2">
+                <Label htmlFor="username" className="text-base font-sans font-normal">Username</Label>
+                <Input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="grid gap-2">
+                <Label htmlFor="password" className="text-base font-sans font-normal">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
             </div>
-            <div className="flex flex-col gap-1">
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            <Button type="submit" disabled={loading}>
-              {loading ? "Entrando..." : "Entrar"}
+          </CardContent>
+          <CardFooter className="flex-col gap-2">
+            <Button type="submit" className="w-full text-base">
+              Login
             </Button>
             {error && (
               <Alert variant="destructive">
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
-          </form>
-        </CardContent>
+          </CardFooter>
+        </form>
       </Card>
     </main>
   );
