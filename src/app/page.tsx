@@ -16,6 +16,7 @@ import {
   EmptyDescription,
 } from "@/components/ui/empty";
 import { Spinner } from "@/components/ui/spinner";
+import Link from "next/link";
 
 export default function HomePage() {
   const router = useRouter();
@@ -100,6 +101,9 @@ export default function HomePage() {
               <AlertDescription>Failed to reach the API: {detail}</AlertDescription>
             </Alert>
           )}
+          <Button variant="outline" render={<Link href="/notes" />}>
+            My notes
+          </Button>
           <Button onClick={handleLogout}>
             Log out
           </Button>
