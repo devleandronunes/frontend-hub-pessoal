@@ -2,6 +2,44 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
+@theme {
+  --color-supernova-50: #fffceb;
+  --color-supernova-100: #fff5c6;
+  --color-supernova-200: #ffeb88;
+  --color-supernova-300: #ffda4a;
+  --color-supernova-400: #ffc71f;
+  --color-supernova-500: #f9a607;
+  --color-supernova-600: #dd7e02;
+  --color-supernova-700: #b75806;
+  --color-supernova-800: #94430c;
+  --color-supernova-900: #7a380d;
+  --color-supernova-950: #461c02;
+
+  --color-tuatara-50: #fafafa;
+  --color-tuatara-100: #f5f5f5;
+  --color-tuatara-200: #e6e6e6;
+  --color-tuatara-300: #d3d3d3;
+  --color-tuatara-400: #a3a3a3;
+  --color-tuatara-500: #727272;
+  --color-tuatara-600: #535353;
+  --color-tuatara-700: #3d3d3d;
+  --color-tuatara-800: #272727;
+  --color-tuatara-900: #1a1a1a;
+  --color-tuatara-950: #0b0b0b;
+
+  --color-ripe-lemon-50: #fefee8;
+  --color-ripe-lemon-100: #fefdc3;
+  --color-ripe-lemon-200: #fef88a;
+  --color-ripe-lemon-300: #fded47;
+  --color-ripe-lemon-400: #fadd18;
+  --color-ripe-lemon-500: #eac308;
+  --color-ripe-lemon-600: #ca9804;
+  --color-ripe-lemon-700: #a16d07;
+  --color-ripe-lemon-800: #85560e;
+  --color-ripe-lemon-900: #714612;
+  --color-ripe-lemon-950: #422406;
+}
+
 @theme inline {
   --font-head: var(--font-head);
   --font-sans: var(--font-sans);
@@ -17,6 +55,8 @@
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-foreground: var(--tertiary-foreground);
   --color-border: var(--border);
   --font-heading: var(--font-heading);
   --shadow-2xl: var(--shadow-2xl);
@@ -55,14 +95,16 @@
   --radius: 0.25rem;
   --background: #ffffff;
   --foreground: #0a0a0a;
-  --primary: #ffdc58;
-  --secondary: #0a0a0a;
+  --primary: #ffc71f;
+  --secondary: #3d3d3d;
+  --tertiary: #fadd18;
+  --tertiary-foreground: #000000;
   --border: #000000;
   --card: #ffffff;
   --card-foreground: #0a0a0a;
   --popover: #ffffff;
   --popover-foreground: #0a0a0a;
-  --secondary-foreground: #ffffff;
+  --secondary-foreground: #fafafa;
   --muted: #f2f2f2;
   --muted-foreground: #5c5c5c;
   --input: #ffffff;
@@ -71,7 +113,7 @@
   --primary-foreground: #000000;
   --accent: #ffe7a3;
   --accent-foreground: #1a1815;
-  --ring: #ffdc58;
+  --ring: #ffc71f;
   --chart-1: #c4a1ff;
   --chart-2: #01ffcc;
   --chart-3: #e7f192;
@@ -85,7 +127,7 @@
   --shadow-lg: 6px 6px 0 0 var(--shadow-color);
   --shadow-xl: 10px 10px 0 1px var(--shadow-color);
   --shadow-2xl: 16px 16px 0 1px var(--shadow-color);
-  --font-heading: 'Space Grotesk', sans-serif;
+  --font-heading: 'Clash Grotesk', sans-serif;
   --font-sans: 'Space Grotesk', sans-serif;
   --destructive: oklch(0.577 0.245 27.325);
 }
@@ -99,10 +141,12 @@
   --card-foreground: #fafafa;
   --popover: #1a1a1a;
   --popover-foreground: #fafafa;
-  --primary: #ffdc58;
+  --primary: #ffc71f;
   --primary-foreground: #000000;
-  --secondary: #fafafa;
-  --secondary-foreground: #0f0f0f;
+  --secondary: #3d3d3d;
+  --secondary-foreground: #fafafa;
+  --tertiary: #fadd18;
+  --tertiary-foreground: #000000;
   --muted: #262626;
   --muted-foreground: #a3a3a3;
   --accent: #38342b;
@@ -110,7 +154,7 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: #000000;
   --input: #1a1a1a;
-  --ring: #ffdc58;
+  --ring: #ffc71f;
   --chart-1: #ffdc58;
   --chart-2: #f5f0e6;
   --chart-3: #aeaeae;
