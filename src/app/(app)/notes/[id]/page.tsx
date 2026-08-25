@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
 import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { useNotesTree } from "@/components/notes/notes-context";
+import { useSync } from "@/components/notes/sync-context";
 import {
   getNote,
   updateNote,
@@ -28,6 +29,7 @@ export default function NoteEditorPage() {
 function NoteEditor({ id }: { id: string }) {
   const router = useRouter();
   const { refreshTree, showError } = useNotesTree();
+  const { refreshStatus } = useSync();
 
   const [note, setNote] = useState<Note | null>(null);
   const [loading, setLoading] = useState(true);
@@ -62,6 +64,7 @@ function NoteEditor({ id }: { id: string }) {
         const updated = await updateNote(note.id, note.title, value, note.tags);
         setNote(updated);
         setSaveStatus("saved");
+        void refreshStatus();
       } catch {
         setSaveStatus("idle");
         showError("Couldn't save — another note with this title may already exist in this folder.");
@@ -77,6 +80,7 @@ function NoteEditor({ id }: { id: string }) {
     const updated = await togglePin(note.id);
     setNote(updated);
     await refreshTree();
+    void refreshStatus();
   }
 
   async function handleDuplicate() {
@@ -86,6 +90,7 @@ function NoteEditor({ id }: { id: string }) {
 
     const copy = await duplicateNote(note.id);
     await refreshTree();
+    void refreshStatus();
     router.push(`/notes/${copy.id}`);
   }
 

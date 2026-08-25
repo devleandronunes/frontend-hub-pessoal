@@ -15,6 +15,7 @@ import {
   PencilIcon,
 } from "lucide-react";
 import { useNotesTree } from "./notes-context";
+import { useSync } from "./sync-context";
 import {
   createNote,
   createFolder,
@@ -48,6 +49,7 @@ type Creating = { parentId: string | null; type: "note" | "folder" } | null;
 
 export function NoteTree() {
   const { tree, refreshTree, showError } = useNotesTree();
+  const { refreshStatus } = useSync();
   const [creating, setCreating] = useState<Creating>(null);
   const router = useRouter();
 
@@ -66,11 +68,13 @@ export function NoteTree() {
       if (creating.type === "note") {
         const note = await createNote(trimmed, creating.parentId);
         await refreshTree();
+        void refreshStatus();
         setCreating(null);
         router.push(`/notes/${note.id}`);
       } else {
         await createFolder(trimmed, creating.parentId);
         await refreshTree();
+        void refreshStatus();
         setCreating(null);
       }
     } catch {
@@ -90,6 +94,7 @@ export function NoteTree() {
         await renameFolder(id, name);
       }
       await refreshTree();
+      void refreshStatus();
     } catch {
       showError("An item with this name already exists in this folder.");
     }
@@ -106,6 +111,7 @@ export function NoteTree() {
         await deleteFolder(id);
       }
       await refreshTree();
+      void refreshStatus();
     } catch {
       showError("This folder isn't empty — move or delete its contents first.");
     }
