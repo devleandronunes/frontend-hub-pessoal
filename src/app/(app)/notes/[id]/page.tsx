@@ -134,7 +134,12 @@ function NoteEditor({ id }: { id: string }) {
           <Tooltip>
             <TooltipTrigger
               render={
-                <Button size="icon-sm" variant="ghost" onClick={handleTogglePin}>
+                <Button
+                  size="icon-sm"
+                  variant="ghost"
+                  aria-label={note.isPinned ? "Unpin" : "Pin"}
+                  onClick={handleTogglePin}
+                >
                   <PinIcon className={note.isPinned ? "fill-primary text-primary" : ""} />
                 </Button>
               }
@@ -144,7 +149,7 @@ function NoteEditor({ id }: { id: string }) {
           <Tooltip>
             <TooltipTrigger
               render={
-                <Button size="icon-sm" variant="ghost" onClick={handleDuplicate}>
+                <Button size="icon-sm" variant="ghost" aria-label="Duplicate" onClick={handleDuplicate}>
                   <CopyIcon />
                 </Button>
               }
@@ -154,7 +159,7 @@ function NoteEditor({ id }: { id: string }) {
           <Tooltip>
             <TooltipTrigger
               render={
-                <Button size="icon-sm" variant="ghost" onClick={handleExport}>
+                <Button size="icon-sm" variant="ghost" aria-label="Export .md" onClick={handleExport}>
                   <DownloadIcon />
                 </Button>
               }

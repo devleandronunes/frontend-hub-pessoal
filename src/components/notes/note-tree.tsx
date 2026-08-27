@@ -126,6 +126,7 @@ export function NoteTree() {
             <TooltipTrigger
               render={
                 <button
+                  aria-label="New note"
                   onClick={() => setCreating({ parentId: null, type: "note" })}
                   className="rounded p-1 hover:bg-accent"
                 >
@@ -139,6 +140,7 @@ export function NoteTree() {
             <TooltipTrigger
               render={
                 <button
+                  aria-label="New folder"
                   onClick={() => setCreating({ parentId: null, type: "folder" })}
                   className="rounded p-1 hover:bg-accent"
                 >
@@ -187,6 +189,7 @@ function InlineInput({
 
   return (
     <input
+      aria-label="Name"
       autoFocus
       value={value}
       onChange={(e) => setValue(e.target.value)}
