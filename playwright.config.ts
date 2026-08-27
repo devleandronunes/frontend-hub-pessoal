@@ -16,6 +16,12 @@ export default defineConfig({
   workers: 1,
   use: {
     baseURL: "http://localhost:3000",
+    // viewport: null deixa a página usar o tamanho real da janela em vez de um viewport fixo —
+    // precisa disso pra --start-maximized (abaixo) realmente ter efeito no modo --headed.
+    viewport: null,
+    launchOptions: {
+      args: ["--start-maximized"],
+    },
   },
   webServer: {
     command: "npm run dev",

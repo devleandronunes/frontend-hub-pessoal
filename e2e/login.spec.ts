@@ -4,7 +4,8 @@ import { login, E2E_USERNAME } from "./helpers";
 test("login with valid credentials opens the notes app", async ({ page }) => {
   await login(page);
 
-  await expect(page.getByText("Notes", { exact: true })).toBeVisible();
+  await expect(page).toHaveURL("/notes");
+  await expect(page.getByRole("button", { name: "New note" })).toBeVisible();
 });
 
 test("login with wrong password shows an error and stays on the page", async ({ page }) => {
