@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import {
@@ -186,6 +186,27 @@ function InlineInput({
   defaultValue?: string;
 }) {
   const [value, setValue] = useState(defaultValue);
+  // Enter dispara onSubmit e, no mesmo instante, o input desmonta (o pai tira o modo "criando"
+  // da árvore) — perder o foco de um elemento sendo removido do DOM dispara blur, que chamaria
+  // onSubmit de novo com o mesmo valor. Esse guard garante que só a primeira chamada (Enter ou
+  // Escape) realmente propaga; blur depois disso vira no-op.
+  const settledRef = useRef(false);
+
+  function submit(current: string) {
+    if (settledRef.current) {
+      return;
+    }
+    settledRef.current = true;
+    onSubmit(current);
+  }
+
+  function cancel() {
+    if (settledRef.current) {
+      return;
+    }
+    settledRef.current = true;
+    onCancel();
+  }
 
   return (
     <input
@@ -195,13 +216,13 @@ function InlineInput({
       onChange={(e) => setValue(e.target.value)}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
-          onSubmit(value);
+          submit(value);
         }
         if (e.key === "Escape") {
-          onCancel();
+          cancel();
         }
       }}
-      onBlur={() => onSubmit(value)}
+      onBlur={() => submit(value)}
       style={{ paddingLeft: `${depth * 16 + 8}px` }}
       className="w-full rounded border-2 bg-input py-1 pr-2 text-sm outline-none"
     />
