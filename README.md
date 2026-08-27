@@ -83,7 +83,17 @@ O editor nunca fala com o git diretamente — toda mudança de conteúdo vai par
 
 ## Como rodar os testes E2E
 
-Os testes usam o backend real de desenvolvimento — sem mock, mesma filosofia do resto do projeto — então dependem da API e do frontend já rodando localmente, e das credenciais do usuário seed configurado no backend (`Auth:SeedUsername`/`Auth:SeedPassword`):
+Os testes usam o backend real de desenvolvimento — sem mock, mesma filosofia do resto do projeto — então dependem da API e do frontend já rodando localmente, e das credenciais do usuário seed configurado no backend (`Auth:SeedUsername`/`Auth:SeedPassword`).
+
+Configure uma vez, num arquivo git-ignorado:
+
+```bash
+cp .env.e2e.example .env.e2e
+# edite E2E_USERNAME e E2E_PASSWORD com as credenciais do seu usuário seed
+npm run test:e2e
+```
+
+Ou passe direto na linha de comando (tem prioridade sobre o `.env.e2e`):
 
 ```bash
 E2E_USERNAME=<usuário-seed> E2E_PASSWORD=<senha-seed> npm run test:e2e
