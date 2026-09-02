@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 import { login, uniqueTitle } from "./helpers";
 
 test.beforeEach(async ({ page }) => {
@@ -45,4 +46,21 @@ test("renames and deletes a note from the tree", async ({ page }) => {
   await page.getByRole("button", { name: "Delete" }).click();
 
   await expect(page.getByText(renamed, { exact: true })).not.toBeVisible();
+});
+
+// Tela autenticada com nota aberta — mais complexa que o login, cobre o editor/preview.
+test("notes shell has no serious a11y violations", async ({ page }) => {
+  const title = uniqueTitle("Nota a11y");
+
+  await page.getByRole("button", { name: "New note" }).click();
+  await page.getByLabel("Name").fill(title);
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/notes\/[\w-]+/);
+
+  const results = await new AxeBuilder({ page }).analyze();
+  const serious = results.violations.filter(
+    (v) => v.impact === "critical" || v.impact === "serious"
+  );
+
+  expect(serious).toEqual([]);
 });

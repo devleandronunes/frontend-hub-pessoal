@@ -30,6 +30,7 @@ export default function NotesLayout({ children }: { children: React.ReactNode })
                     render={
                       <button
                         onClick={() => setSidebarOpen((v) => !v)}
+                        aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
                         className="rounded p-1.5 hover:bg-accent"
                       >
                         {sidebarOpen ? (

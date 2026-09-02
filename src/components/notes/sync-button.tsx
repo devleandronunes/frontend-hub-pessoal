@@ -126,7 +126,11 @@ export function SyncButton() {
         <Tooltip>
           <TooltipTrigger
             render={
-              <Link href="/notes/history" className="rounded p-1.5 hover:bg-accent">
+              <Link
+                href="/notes/history"
+                aria-label="Sync history"
+                className="rounded p-1.5 hover:bg-accent"
+              >
                 <HistoryIcon className="size-4" />
               </Link>
             }
