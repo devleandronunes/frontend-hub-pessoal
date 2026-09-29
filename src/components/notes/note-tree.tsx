@@ -248,7 +248,7 @@ function TreeNode({
   onRename: (id: string, type: "note" | "folder", name: string) => void;
   onDelete: (id: string, type: "note" | "folder") => void;
 }) {
-  const [expanded, setExpanded] = useState(true);
+  const [expanded, setExpanded] = useState(false);
   const [editing, setEditing] = useState(false);
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
   const params = useParams<{ id?: string }>();
@@ -323,10 +323,18 @@ function TreeNode({
           </ContextMenuTrigger>
 
           <ContextMenuContent>
-            <ContextMenuItem onClick={() => onStartCreate({ parentId: node.id, type: "note" })}>
+            <ContextMenuItem onClick={() => {
+              setExpanded(true);
+              onStartCreate({ parentId: node.id, type: "note" });
+              }}
+            >
               <FilePlusIcon /> New note
             </ContextMenuItem>
-            <ContextMenuItem onClick={() => onStartCreate({ parentId: node.id, type: "folder" })}>
+            <ContextMenuItem onClick={() => {
+              setExpanded(true);
+              onStartCreate({ parentId: node.id, type: "note" });
+              }}
+            >
               <FolderPlusIcon /> New folder
             </ContextMenuItem>
             <ContextMenuSeparator />
