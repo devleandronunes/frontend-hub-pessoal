@@ -6,6 +6,14 @@ test.beforeEach(async ({ page }) => {
   await login(page);
 });
 
+//========================================
+// NOTE CREATION AND AUTO-SAVE
+//========================================
+// Creates a note from the tree, types in
+// the editor, waits for "Saved" and checks
+// the content in the preview.
+//========================================
+
 test("creates a note, edits it, and confirms auto-save", async ({ page }) => {
   const title = uniqueTitle("Nota E2E");
 
@@ -23,6 +31,13 @@ test("creates a note, edits it, and confirms auto-save", async ({ page }) => {
   await page.getByRole("button", { name: "Preview" }).click();
   await expect(page.getByText("Conteúdo escrito pelo Playwright.")).toBeVisible();
 });
+
+//========================================
+// RENAME AND DELETE FROM THE TREE
+//========================================
+// Renames a note through the context menu
+// and deletes it after confirming.
+//========================================
 
 test("renames and deletes a note from the tree", async ({ page }) => {
   const title = uniqueTitle("Nota para apagar");
@@ -48,7 +63,13 @@ test("renames and deletes a note from the tree", async ({ page }) => {
   await expect(page.getByText(renamed, { exact: true })).not.toBeVisible();
 });
 
-// Tela autenticada com nota aberta — mais complexa que o login, cobre o editor/preview.
+//========================================
+// AUTHENTICATED SCREEN WITH AN OPEN NOTE
+//========================================
+// More complex than the login screen;
+// covers the editor/preview.
+//========================================
+
 test("notes shell has no serious a11y violations", async ({ page }) => {
   const title = uniqueTitle("Nota a11y");
 

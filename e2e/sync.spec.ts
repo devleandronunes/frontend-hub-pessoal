@@ -1,6 +1,14 @@
 import { test, expect } from "@playwright/test";
 import { login, uniqueTitle } from "./helpers";
 
+//========================================
+// SYNC ROUND TRIP
+//========================================
+// Creates a note, confirms the sync plan
+// and finds the commit in the sync history.
+// Uses the real dev notes repository.
+//========================================
+
 test("creates a note, syncs it, and finds it in the sync history", async ({ page }) => {
   await login(page);
 

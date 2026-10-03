@@ -2,12 +2,26 @@ import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { login, E2E_USERNAME } from "./helpers";
 
+//========================================
+// VALID LOGIN
+//========================================
+// Valid credentials land on /notes with
+// the tree ready ("New note" visible).
+//========================================
+
 test("login with valid credentials opens the notes app", async ({ page }) => {
   await login(page);
 
   await expect(page).toHaveURL("/notes");
   await expect(page.getByRole("button", { name: "New note" })).toBeVisible();
 });
+
+//========================================
+// WRONG PASSWORD
+//========================================
+// Shows the error message and keeps the
+// user on /login.
+//========================================
 
 test("login with wrong password shows an error and stays on the page", async ({ page }) => {
   await page.goto("/login");
@@ -19,8 +33,14 @@ test("login with wrong password shows an error and stays on the page", async ({ 
   await expect(page).toHaveURL("/login");
 });
 
-// Checagem de a11y só nas violações que quebrariam a experiência de verdade (critical/serious) —
-// mesma filosofia de "vocabulário pequeno" das outras categorias de teste desta frente.
+//========================================
+// LOGIN SCREEN ACCESSIBILITY
+//========================================
+// Fails only on critical or serious axe
+// violations, the ones that really break
+// the experience.
+//========================================
+
 test("login screen has no serious a11y violations", async ({ page }) => {
   await page.goto("/login");
 

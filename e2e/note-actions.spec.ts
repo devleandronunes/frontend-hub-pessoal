@@ -5,6 +5,14 @@ test.beforeEach(async ({ page }) => {
   await login(page);
 });
 
+//========================================
+// NOTE ACTIONS
+//========================================
+// Pins a new note, duplicates it (the URL
+// moves to the copy) and exports it as a
+// .md download.
+//========================================
+
 test("pins, duplicates, and exports a note", async ({ page }) => {
   const title = uniqueTitle("Nota com ações");
 

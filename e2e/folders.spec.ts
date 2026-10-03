@@ -5,6 +5,14 @@ test.beforeEach(async ({ page }) => {
   await login(page);
 });
 
+//========================================
+// FOLDER LIFECYCLE
+//========================================
+// Creates an empty folder from the tree
+// header, renames it through the context
+// menu and deletes it after confirming.
+//========================================
+
 test("creates, renames, and deletes an empty folder", async ({ page }) => {
   const name = uniqueTitle("Pasta E2E");
   const renamed = uniqueTitle("Pasta renomeada");
