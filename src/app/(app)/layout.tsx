@@ -19,7 +19,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [authStatus, setAuthStatus] = useState<"checking" | "ok">("checking");
   const [username, setUsername] = useState<string | null>(null);
-  const [apiStatus, setApiStatus] = useState<"loading" | "ok" | "error">("loading")
+  const [apiStatus, setApiStatus] = useState<"loading" | "ok" | "error">("loading");
 
   useEffect(() => {
     if (!getToken()) {
@@ -49,7 +49,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }, [authStatus]);
 
   function handleLogout() {
-    clearToken()
+    clearToken();
     router.push("/login");
   }
 
@@ -58,7 +58,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <main className="flex min-h-screen items-center justify-center">
         <Spinner className="size-8" />
       </main>
-    )
+    );
   }
 
   const activeService = services.find((service) => pathname.startsWith(service.href));
