@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 import { login } from "./helpers";
 
 // Snapshots only of the screens where the hub's own visual identity (RetroUI theme + hub palette)

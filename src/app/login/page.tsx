@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { login } from "@/services/auth-service";
-import { setToken } from "@/lib/auth-token";
+import { type FormEvent, useState } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardFooter } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Spinner } from "@/components/ui/spinner";
+import { setToken } from "@/lib/auth-token";
+import { login } from "@/services/auth-service";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -36,14 +36,14 @@ export default function LoginPage() {
 
   if (loading) {
     return (
-      <main className="mx-auto grid w-full max-w-sm min-h-screen items-center justify-center p-4">
+      <main className="mx-auto grid min-h-screen w-full max-w-sm items-center justify-center p-4">
         <Spinner className="size-8" />
       </main>
     );
   }
 
   return (
-    <main className="mx-auto grid w-full max-w-sm min-h-screen items-center p-4">
+    <main className="mx-auto grid min-h-screen w-full max-w-sm items-center p-4">
       <Card className="[--card-spacing:--spacing(7)]">
         <CardHeader>
           <CardTitle>Login to your account</CardTitle>
@@ -53,7 +53,9 @@ export default function LoginPage() {
           <CardContent>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="username" className="text-base font-sans font-normal">Username</Label>
+                <Label htmlFor="username" className="font-normal font-sans text-base">
+                  Username
+                </Label>
                 <Input
                   id="username"
                   type="text"
@@ -63,7 +65,9 @@ export default function LoginPage() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="password" className="text-base font-sans font-normal">Password</Label>
+                <Label htmlFor="password" className="font-normal font-sans text-base">
+                  Password
+                </Label>
                 <Input
                   id="password"
                   type="password"

@@ -1,24 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { CopyIcon, DownloadIcon, PinIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
-import { PinIcon, CopyIcon, DownloadIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Spinner } from "@/components/ui/spinner";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
 import { useNotesTree } from "@/components/notes/notes-context";
 import { useSync } from "@/components/notes/sync-context";
-import {
-  getNote,
-  updateNote,
-  togglePin,
-  duplicateNote,
-  exportNote,
-  type Note,
-} from "@/services/notes-service";
+import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
+import { Textarea } from "@/components/ui/textarea";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { getErrorMessage } from "@/lib/error-message";
+import { duplicateNote, exportNote, getNote, type Note, togglePin, updateNote } from "@/services/notes-service";
 
 type SaveStatus = "idle" | "saving" | "saved";
 
@@ -66,9 +59,11 @@ function NoteEditor({ id }: { id: string }) {
         setNote(updated);
         setSaveStatus("saved");
         void refreshStatus();
-      } catch (error){
+      } catch (error) {
         setSaveStatus("idle");
-        showError(getErrorMessage(error, "Couldn't save — another note with this title may already exist in this folder."));
+        showError(
+          getErrorMessage(error, "Couldn't save — another note with this title may already exist in this folder.")
+        );
       }
     }, 800);
   }
@@ -112,12 +107,12 @@ function NoteEditor({ id }: { id: string }) {
   }
 
   if (!note) {
-    return <div className="p-6 text-sm text-muted-foreground">Note not found.</div>;
+    return <div className="p-6 text-muted-foreground text-sm">Note not found.</div>;
   }
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between border-b-2 border-border p-2">
+      <div className="flex items-center justify-between border-border border-b-2 p-2">
         <div className="flex items-center gap-1">
           <Button size="sm" variant={mode === "preview" ? "default" : "outline"} onClick={() => setMode("preview")}>
             Preview
@@ -125,7 +120,7 @@ function NoteEditor({ id }: { id: string }) {
           <Button size="sm" variant={mode === "editor" ? "default" : "outline"} onClick={() => setMode("editor")}>
             Editor
           </Button>
-          <span className="ml-2 text-xs text-muted-foreground">
+          <span className="ml-2 text-muted-foreground text-xs">
             {saveStatus === "saving" && "Saving..."}
             {saveStatus === "saved" && "Saved"}
           </span>

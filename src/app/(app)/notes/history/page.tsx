@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getSyncHistory, getSyncCommit, type SyncCommitSummary, type SyncCommitDetail } from "@/services/sync-service";
 import { Spinner } from "@/components/ui/spinner";
+import { getSyncCommit, getSyncHistory, type SyncCommitDetail, type SyncCommitSummary } from "@/services/sync-service";
 
 export default function SyncHistoryPage() {
   const [commits, setCommits] = useState<SyncCommitSummary[]>([]);
@@ -36,7 +36,7 @@ export default function SyncHistoryPage() {
   }
 
   if (commits.length === 0) {
-    return <div className="p-6 text-sm text-muted-foreground">No commits yet.</div>;
+    return <div className="p-6 text-muted-foreground text-sm">No commits yet.</div>;
   }
 
   return (
@@ -46,23 +46,24 @@ export default function SyncHistoryPage() {
       <ul className="space-y-2">
         {commits.map((commit) => (
           <li key={commit.commitHash} className="rounded border-2 border-border">
-            <button type="button"
+            <button
+              type="button"
               onClick={() => toggle(commit.commitHash)}
               className="flex w-full items-center justify-between p-3 text-left text-sm hover:bg-accent"
             >
               <div>
                 <p className="font-medium">{commit.message.split("\n")[0]}</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   {new Date(commit.committedAt).toLocaleString()} · {commit.commitHash.slice(0, 7)}
                 </p>
               </div>
-              <span className="shrink-0 text-xs text-muted-foreground">
+              <span className="shrink-0 text-muted-foreground text-xs">
                 {commit.filesChanged} file(s) +{commit.insertions}/-{commit.deletions}
               </span>
             </button>
 
             {expanded === commit.commitHash && detail && (
-              <ul className="border-t-2 border-border p-3 text-xs">
+              <ul className="border-border border-t-2 p-3 text-xs">
                 {detail.files.map((file) => (
                   <li key={file.path} className="flex justify-between py-0.5">
                     <span className="truncate">{file.path}</span>

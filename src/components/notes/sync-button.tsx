@@ -1,24 +1,24 @@
 "use client";
 
-import { useState } from "react";
-import { RefreshCwIcon, HistoryIcon } from "lucide-react";
+import { HistoryIcon, RefreshCwIcon } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import {
   AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogFooter,
-  AlertDialogTitle,
-  AlertDialogDescription,
   AlertDialogAction,
   AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { useSync } from "./sync-context";
-import { useNotesTree } from "./notes-context";
-import { previewSync, applySync, type SyncPlan, type SyncState } from "@/services/sync-service";
+import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { applySync, previewSync, type SyncPlan, type SyncState } from "@/services/sync-service";
+import { useNotesTree } from "./notes-context";
+import { useSync } from "./sync-context";
 
 const STATE_LABEL: Record<SyncState, string> = {
   Clean: "Synced",
@@ -93,7 +93,7 @@ export function SyncButton() {
     }
   }
 
-  const state = justSynced ? null : status?.state ?? "Clean";
+  const state = justSynced ? null : (status?.state ?? "Clean");
   const buttonClass = justSynced ? JUST_SYNCED_CLASS : state ? STATE_CLASS[state] : "";
   const label = justSynced ? "Synced" : status ? STATE_LABEL[status.state] : "Sync";
 
@@ -103,12 +103,7 @@ export function SyncButton() {
         <Tooltip>
           <TooltipTrigger
             render={
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={handleOpen}
-                className={cn("gap-1.5", buttonClass)}
-              >
+              <Button size="sm" variant="outline" onClick={handleOpen} className={cn("gap-1.5", buttonClass)}>
                 <RefreshCwIcon className={cn("size-3.5", applying && "animate-spin")} />
                 {label}
               </Button>
@@ -126,11 +121,7 @@ export function SyncButton() {
         <Tooltip>
           <TooltipTrigger
             render={
-              <Link
-                href="/notes/history"
-                aria-label="Sync history"
-                className="rounded p-1.5 hover:bg-accent"
-              >
+              <Link href="/notes/history" aria-label="Sync history" className="rounded p-1.5 hover:bg-accent">
                 <HistoryIcon className="size-4" />
               </Link>
             }
@@ -156,7 +147,7 @@ export function SyncButton() {
             <div className="max-h-64 space-y-3 overflow-y-auto text-sm">
               <div>
                 <p className="mb-1 font-medium">Commands</p>
-                <pre className="rounded border-2 bg-muted p-2 text-xs whitespace-pre-wrap">
+                <pre className="whitespace-pre-wrap rounded border-2 bg-muted p-2 text-xs">
                   {plan.commands.join("\n")}
                 </pre>
               </div>
@@ -164,9 +155,7 @@ export function SyncButton() {
               {plan.commitMessage && (
                 <div>
                   <p className="mb-1 font-medium">Commit message</p>
-                  <pre className="rounded border-2 bg-muted p-2 text-xs whitespace-pre-wrap">
-                    {plan.commitMessage}
-                  </pre>
+                  <pre className="whitespace-pre-wrap rounded border-2 bg-muted p-2 text-xs">{plan.commitMessage}</pre>
                 </div>
               )}
 

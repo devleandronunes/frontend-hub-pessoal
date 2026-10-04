@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from "react";
 import { getSyncStatus, type SyncStatus } from "@/services/sync-service";
 
 type SyncContextValue = {
@@ -41,11 +41,7 @@ export function SyncProvider({ children }: { children: ReactNode }) {
     return () => clearTimeout(timeout);
   }, [justSynced]);
 
-  return (
-    <SyncContext.Provider value={{ status, loading, justSynced, refreshStatus }}>
-      {children}
-    </SyncContext.Provider>
-  );
+  return <SyncContext.Provider value={{ status, loading, justSynced, refreshStatus }}>{children}</SyncContext.Provider>;
 }
 
 export function useSync() {

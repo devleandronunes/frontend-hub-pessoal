@@ -1,6 +1,6 @@
-import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import { login, E2E_USERNAME } from "./helpers";
+import { expect, test } from "@playwright/test";
+import { E2E_USERNAME, login } from "./helpers";
 
 //========================================
 // VALID LOGIN
@@ -45,9 +45,7 @@ test("login screen has no serious a11y violations", async ({ page }) => {
   await page.goto("/login");
 
   const results = await new AxeBuilder({ page }).analyze();
-  const serious = results.violations.filter(
-    (v) => v.impact === "critical" || v.impact === "serious"
-  );
+  const serious = results.violations.filter((v) => v.impact === "critical" || v.impact === "serious");
 
   expect(serious).toEqual([]);
 });

@@ -128,8 +128,8 @@
   --shadow-lg: 6px 6px 0 0 var(--shadow-color);
   --shadow-xl: 10px 10px 0 1px var(--shadow-color);
   --shadow-2xl: 16px 16px 0 1px var(--shadow-color);
-  --font-heading: 'Clash Grotesk', sans-serif;
-  --font-sans: 'Space Grotesk', sans-serif;
+  --font-heading: "Clash Grotesk", sans-serif;
+  --font-sans: "Space Grotesk", sans-serif;
   --destructive: oklch(0.577 0.245 27.325);
 }
 
@@ -172,8 +172,8 @@
   --shadow-lg: 6px 6px 0 0 var(--shadow-color);
   --shadow-xl: 10px 10px 0 1px var(--shadow-color);
   --shadow-2xl: 16px 16px 0 1px var(--shadow-color);
-  --font-heading: 'Space Grotesk', sans-serif;
-  --font-sans: 'Space Grotesk', sans-serif;
+  --font-heading: "Space Grotesk", sans-serif;
+  --font-sans: "Space Grotesk", sans-serif;
 }
 
 @layer base {
@@ -186,7 +186,6 @@
   html {
     @apply font-sans;
   }
-
 }
 
 @layer utilities {
@@ -247,9 +246,15 @@
   margin-bottom: 0.5em;
 }
 
-.markdown-preview h1 { font-size: 1.5rem; }
-.markdown-preview h2 { font-size: 1.25rem; }
-.markdown-preview h3 { font-size: 1.1rem; }
+.markdown-preview h1 {
+  font-size: 1.5rem;
+}
+.markdown-preview h2 {
+  font-size: 1.25rem;
+}
+.markdown-preview h3 {
+  font-size: 1.1rem;
+}
 
 .markdown-preview p,
 .markdown-preview ul,

@@ -1,5 +1,5 @@
-import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { expect, test } from "@playwright/test";
 import { login, uniqueTitle } from "./helpers";
 
 test.beforeEach(async ({ page }) => {
@@ -72,9 +72,7 @@ test("renames and deletes a note from the tree", async ({ page }) => {
 // it was stored as typed.
 //========================================
 
-test("saves content with shell commands and accents", async ({
-
- page }) => {
+test("saves content with shell commands and accents", async ({ page }) => {
   const title = uniqueTitle("Conexão servidor");
   const content = "# Conexão\n```\ncurl -fsSL https://example.com/install.sh | sh\n```";
 
@@ -88,9 +86,9 @@ test("saves content with shell commands and accents", async ({
   await expect(page.getByText("Saved")).toBeVisible({ timeout: 3000 });
 
   await page.reload();
-  await page.getByRole("button", { name: "Editor" }).click()
+  await page.getByRole("button", { name: "Editor" }).click();
   await expect(page.getByPlaceholder("Write markdown...")).toHaveValue(content);
- });
+});
 
 //========================================
 // DUPLICATE TITLE MESSAGE
@@ -100,18 +98,17 @@ test("saves content with shell commands and accents", async ({
 // generic one.
 //========================================
 
-test("shows the API message when a title already exists", async ({
-page }) => {
+test("shows the API message when a title already exists", async ({ page }) => {
   const title = uniqueTitle("Nota duplicada");
 
   for (let i = 0; i < 2; i++) {
     await page.getByRole("button", { name: "New note" }).click();
     await page.getByLabel("Name").fill(title);
-    await page.keyboard.press("Enter");
+  await page.keyboard.press("Enter");
   }
 
-  await expect(page.getByText("A note with this title already exists in the same folder.")).toBeVisible();
-});
+  await expect(page.getByText("A note with this title already exists in the same folder.")).toBeVisible()
+})
 
 //========================================
 // AUTHENTICATED SCREEN WITH AN OPEN NOTE
@@ -129,9 +126,7 @@ test("notes shell has no serious a11y violations", async ({ page }) => {
   await expect(page).toHaveURL(/\/notes\/[\w-]+/);
 
   const results = await new AxeBuilder({ page }).analyze();
-  const serious = results.violations.filter(
-    (v) => v.impact === "critical" || v.impact === "serious"
-  );
+  const serious = results.violations.filter((v) => v.impact === "critical" || v.impact === "serious");
 
   expect(serious).toEqual([]);
 });

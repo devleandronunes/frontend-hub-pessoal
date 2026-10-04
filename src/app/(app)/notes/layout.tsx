@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import { PanelLeftCloseIcon, PanelLeftIcon, XIcon } from "lucide-react";
-import { NotesTreeProvider, useNotesTree } from "@/components/notes/notes-context";
+import { useState } from "react";
 import { NoteTree } from "@/components/notes/note-tree";
-import { SyncProvider } from "@/components/notes/sync-context";
+import { NotesTreeProvider, useNotesTree } from "@/components/notes/notes-context";
 import { SyncButton } from "@/components/notes/sync-button";
-import { TooltipProvider, Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
-import { Alert, AlertDescription, AlertAction } from "@/components/ui/alert";
+import { SyncProvider } from "@/components/notes/sync-context";
+import { Alert, AlertAction, AlertDescription } from "@/components/ui/alert";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export default function NotesLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -18,26 +18,23 @@ export default function NotesLayout({ children }: { children: React.ReactNode })
         <TooltipProvider>
           <div className="flex h-screen">
             {sidebarOpen && (
-              <aside className="w-64 shrink-0 overflow-y-auto border-r-2 border-border p-2">
+              <aside className="w-64 shrink-0 overflow-y-auto border-border border-r-2 p-2">
                 <NoteTree />
               </aside>
             )}
 
             <div className="flex flex-1 flex-col overflow-hidden">
-              <div className="flex items-center justify-between border-b-2 border-border p-2">
+              <div className="flex items-center justify-between border-border border-b-2 p-2">
                 <Tooltip>
                   <TooltipTrigger
                     render={
-                      <button type="button"
+                      <button
+                        type="button"
                         onClick={() => setSidebarOpen((v) => !v)}
                         aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
                         className="rounded p-1.5 hover:bg-accent"
                       >
-                        {sidebarOpen ? (
-                          <PanelLeftCloseIcon className="size-4" />
-                        ) : (
-                          <PanelLeftIcon className="size-4" />
-                        )}
+                        {sidebarOpen ? <PanelLeftCloseIcon className="size-4" /> : <PanelLeftIcon className="size-4" />}
                       </button>
                     }
                   />
@@ -66,7 +63,7 @@ function ErrorToast() {
   }
 
   return (
-    <div className="fixed bottom-4 right-4 z-50 w-auto max-w-sm">
+    <div className="fixed right-4 bottom-4 z-50 w-auto max-w-sm">
       <Alert status="error" className="text-xs shadow-lg">
         <AlertDescription>{error}</AlertDescription>
         <AlertAction>

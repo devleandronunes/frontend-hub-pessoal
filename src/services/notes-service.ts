@@ -51,10 +51,10 @@ async function handle<T>(response: Response): Promise<T> {
       throw new Error("The server's firewall blocked this request.");
     }
 
-  const body: ProblemBody | null = await response.json().catch(() => null);
-  const firstValidationError = body?.errors ? Object.values(body.errors).flat()[0] : undefined;
-  throw new Error(body?.detail ?? firstValidationError ?? body?.title ?? `Request failed (${response.status}).`);
-  };
+    const body: ProblemBody | null = await response.json().catch(() => null);
+    const firstValidationError = body?.errors ? Object.values(body.errors).flat()[0] : undefined;
+    throw new Error(body?.detail ?? firstValidationError ?? body?.title ?? `Request failed (${response.status}).`);
+  }
 
   if (response.status === 204) {
     return undefined as T;

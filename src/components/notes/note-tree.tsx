@@ -1,50 +1,50 @@
 "use client";
 
-import { useRef, useState } from "react";
-import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
 import {
-  ChevronRightIcon,
   ChevronDownIcon,
+  ChevronRightIcon,
+  FilePlusIcon,
   FileTextIcon,
   FolderIcon,
   FolderPlusIcon,
-  FilePlusIcon,
-  Trash2Icon,
-  PinIcon,
   PencilIcon,
+  PinIcon,
+  Trash2Icon,
 } from "lucide-react";
-import { useNotesTree } from "./notes-context";
-import { useSync } from "./sync-context";
+import Link from "next/link";
+import { useParams, useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 import {
-  createNote,
-  createFolder,
-  renameNote,
-  renameFolder,
-  deleteNote,
-  deleteFolder,
-  type NoteTreeNode,
-} from "@/services/notes-service";
-import { cn } from "@/lib/utils";
-import { Tooltip, TooltipTrigger, TooltipContent } from "@/components/ui/tooltip";
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import {
   ContextMenu,
-  ContextMenuTrigger,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuSeparator,
+  ContextMenuTrigger,
 } from "@/components/ui/context-menu";
-import {
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogFooter,
-  AlertDialogTitle,
-  AlertDialogDescription,
-  AlertDialogAction,
-  AlertDialogCancel,
-} from "@/components/ui/alert-dialog";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { getErrorMessage } from "@/lib/error-message";
+import { cn } from "@/lib/utils";
+import {
+  createFolder,
+  createNote,
+  deleteFolder,
+  deleteNote,
+  type NoteTreeNode,
+  renameFolder,
+  renameNote,
+} from "@/services/notes-service";
+import { useNotesTree } from "./notes-context";
+import { useSync } from "./sync-context";
 
 type Creating = { parentId: string | null; type: "note" | "folder" } | null;
 
@@ -79,11 +79,9 @@ export function NoteTree() {
         setCreating(null);
       }
     } catch (error) {
-      showError(getErrorMessage(error,
-        creating.type === "note"
-          ? "Couldn't create the note."
-          : "Couldn't create the folder."
-      ));
+      showError(
+        getErrorMessage(error, creating.type === "note" ? "Couldn't create the note." : "Couldn't create the folder.")
+      );
     }
   }
 
@@ -96,7 +94,7 @@ export function NoteTree() {
       }
       await refreshTree();
       void refreshStatus();
-    } catch (error){
+    } catch (error) {
       showError(getErrorMessage(error, "Coulnd't rename the item."));
     }
   }
@@ -113,7 +111,7 @@ export function NoteTree() {
       }
       await refreshTree();
       void refreshStatus();
-    } catch (error){
+    } catch (error) {
       showError(getErrorMessage(error, "Couldn't delete the item."));
     }
   }
@@ -121,12 +119,13 @@ export function NoteTree() {
   return (
     <div className="flex flex-col gap-1">
       <div className="flex items-center justify-between px-1">
-        <span className="text-xs font-medium tracking-wide text-muted-foreground uppercase">Notes</span>
+        <span className="font-medium text-muted-foreground text-xs uppercase tracking-wide">Notes</span>
         <div className="flex gap-1">
           <Tooltip>
             <TooltipTrigger
               render={
-                <button type="button"
+                <button
+                  type="button"
                   aria-label="New note"
                   onClick={() => setCreating({ parentId: null, type: "note" })}
                   className="rounded p-1 hover:bg-accent"
@@ -140,7 +139,8 @@ export function NoteTree() {
           <Tooltip>
             <TooltipTrigger
               render={
-                <button type="button"
+                <button
+                  type="button"
                   aria-label="New folder"
                   onClick={() => setCreating({ parentId: null, type: "folder" })}
                   className="rounded p-1 hover:bg-accent"
@@ -305,12 +305,11 @@ function TreeNode({
         <ContextMenu>
           <ContextMenuTrigger
             render={
-              <button type="button"
+              <button
+                type="button"
                 onClick={() => setExpanded((v) => !v)}
                 onDoubleClick={() => setEditing(true)}
-                className={cn(
-                  "flex w-full items-center gap-1 rounded py-1 pr-1 text-left text-sm hover:bg-accent"
-                )}
+                className={cn("flex w-full items-center gap-1 rounded py-1 pr-1 text-left text-sm hover:bg-accent")}
                 style={{ paddingLeft: `${depth * 16 + 4}px` }}
               />
             }
@@ -325,16 +324,18 @@ function TreeNode({
           </ContextMenuTrigger>
 
           <ContextMenuContent>
-            <ContextMenuItem onClick={() => {
-              setExpanded(true);
-              onStartCreate({ parentId: node.id, type: "note" });
+            <ContextMenuItem
+              onClick={() => {
+                setExpanded(true);
+                onStartCreate({ parentId: node.id, type: "note" });
               }}
             >
               <FilePlusIcon /> New note
             </ContextMenuItem>
-            <ContextMenuItem onClick={() => {
-              setExpanded(true);
-              onStartCreate({ parentId: node.id, type: "note" });
+            <ContextMenuItem
+              onClick={() => {
+                setExpanded(true);
+                onStartCreate({ parentId: node.id, type: "note" });
               }}
             >
               <FolderPlusIcon /> New folder
