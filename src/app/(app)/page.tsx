@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function HomePage() {
@@ -10,7 +10,9 @@ export default function HomePage() {
           <CardTitle>Notes</CardTitle>
         </CardHeader>
         <CardContent>
-          <Button render={<Link href="/notes" />}>Open</Button>
+          <Link href="/notes" className={buttonVariants()}>
+            Open
+          </Link>
         </CardContent>
       </Card>
     </main>
