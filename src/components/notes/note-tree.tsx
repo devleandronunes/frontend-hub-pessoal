@@ -126,7 +126,7 @@ export function NoteTree() {
           <Tooltip>
             <TooltipTrigger
               render={
-                <button
+                <button type="button"
                   aria-label="New note"
                   onClick={() => setCreating({ parentId: null, type: "note" })}
                   className="rounded p-1 hover:bg-accent"
@@ -140,7 +140,7 @@ export function NoteTree() {
           <Tooltip>
             <TooltipTrigger
               render={
-                <button
+                <button type="button"
                   aria-label="New folder"
                   onClick={() => setCreating({ parentId: null, type: "folder" })}
                   className="rounded p-1 hover:bg-accent"
@@ -212,6 +212,7 @@ function InlineInput({
   return (
     <input
       aria-label="Name"
+      // biome-ignore lint/a11y/noAutofocus: inline create/rename input must take focus immediately, like VS Code
       autoFocus
       value={value}
       onChange={(e) => setValue(e.target.value)}
@@ -304,7 +305,7 @@ function TreeNode({
         <ContextMenu>
           <ContextMenuTrigger
             render={
-              <button
+              <button type="button"
                 onClick={() => setExpanded((v) => !v)}
                 onDoubleClick={() => setEditing(true)}
                 className={cn(

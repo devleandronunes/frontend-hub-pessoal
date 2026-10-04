@@ -1,0 +1,30 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.5.15/schema.json",
+  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+  "files": {
+    "includes": ["**", "!src/components/ui", "!e2e/**/*-snapshots", "!next-env.d.ts"]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 120
+  },
+  "javascript": {
+    "formatter": { "quoteStyle": "double", "semicolons": "always", "trailingCommas": "es5" }
+  },
+  "css": { "parser": { "tailwindDirectives": true } },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "preset": "recommended",
+      "suspicious": { "noConsole": { "level": "warn", "options": { "allow": ["error", "warn"] } } },
+      "style": { "useImportType": "error" },
+      "nursery": {
+        "useSortedClasses": { "level": "warn", "fix": "safe", "options": { "functions": ["cn", "cva"] } }
+      }
+    },
+    "domains": { "next": "recommended", "react": "recommended" }
+  }
+}

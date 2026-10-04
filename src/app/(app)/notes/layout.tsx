@@ -28,7 +28,7 @@ export default function NotesLayout({ children }: { children: React.ReactNode })
                 <Tooltip>
                   <TooltipTrigger
                     render={
-                      <button
+                      <button type="button"
                         onClick={() => setSidebarOpen((v) => !v)}
                         aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
                         className="rounded p-1.5 hover:bg-accent"
@@ -70,7 +70,7 @@ function ErrorToast() {
       <Alert status="error" className="text-xs shadow-lg">
         <AlertDescription>{error}</AlertDescription>
         <AlertAction>
-          <button onClick={dismissError}>
+          <button type="button" onClick={dismissError}>
             <XIcon className="size-3.5" />
           </button>
         </AlertAction>

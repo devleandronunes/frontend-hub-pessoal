@@ -75,7 +75,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           <nav className="flex flex-col gap-1">
             {activeService ? (
               <>
-                <button
+                <button type="button"
                   onClick={() => router.push("/")}
                   className="flex items-center gap-2 py-1 text-sm text-muted-foreground hover:text-foreground"
                 >

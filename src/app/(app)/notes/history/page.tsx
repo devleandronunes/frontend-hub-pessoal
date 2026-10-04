@@ -46,7 +46,7 @@ export default function SyncHistoryPage() {
       <ul className="space-y-2">
         {commits.map((commit) => (
           <li key={commit.commitHash} className="rounded border-2 border-border">
-            <button
+            <button type="button"
               onClick={() => toggle(commit.commitHash)}
               className="flex w-full items-center justify-between p-3 text-left text-sm hover:bg-accent"
             >

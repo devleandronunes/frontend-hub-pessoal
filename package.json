@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
+    "lint": "biome check",
+    "format": "biome check --write",
+    "typecheck": "tsc --noEmit",
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed"
   },
@@ -25,6 +27,7 @@
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
+    "@biomejs/biome": "2.5.15",
     "@playwright/test": "^1.62.1",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.20",
@@ -32,8 +35,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "dotenv": "^17.4.2",
-    "eslint": "^9",
-    "eslint-config-next": "16.2.11",
+    "lefthook": "^2.1.16",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
