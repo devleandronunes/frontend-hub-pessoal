@@ -18,6 +18,7 @@ import {
   exportNote,
   type Note,
 } from "@/services/notes-service";
+import { getErrorMessage } from "@/lib/error-message";
 
 type SaveStatus = "idle" | "saving" | "saved";
 
@@ -65,9 +66,9 @@ function NoteEditor({ id }: { id: string }) {
         setNote(updated);
         setSaveStatus("saved");
         void refreshStatus();
-      } catch {
+      } catch (error){
         setSaveStatus("idle");
-        showError("Couldn't save — another note with this title may already exist in this folder.");
+        showError(getErrorMessage(error, "Couldn't save — another note with this title may already exist in this folder."));
       }
     }, 800);
   }

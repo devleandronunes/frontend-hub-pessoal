@@ -44,6 +44,7 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
 } from "@/components/ui/alert-dialog";
+import { getErrorMessage } from "@/lib/error-message";
 
 type Creating = { parentId: string | null; type: "note" | "folder" } | null;
 
@@ -77,12 +78,12 @@ export function NoteTree() {
         void refreshStatus();
         setCreating(null);
       }
-    } catch {
-      showError(
+    } catch (error) {
+      showError(getErrorMessage(error,
         creating.type === "note"
-          ? "A note with this title already exists in this folder."
-          : "A folder with this name already exists in this folder."
-      );
+          ? "Couldn't create the note."
+          : "Couldn't create the folder."
+      ));
     }
   }
 
@@ -95,8 +96,8 @@ export function NoteTree() {
       }
       await refreshTree();
       void refreshStatus();
-    } catch {
-      showError("An item with this name already exists in this folder.");
+    } catch (error){
+      showError(getErrorMessage(error, "Coulnd't rename the item."));
     }
   }
 
@@ -112,8 +113,8 @@ export function NoteTree() {
       }
       await refreshTree();
       void refreshStatus();
-    } catch {
-      showError("This folder isn't empty — move or delete its contents first.");
+    } catch (error){
+      showError(getErrorMessage(error, "Couldn't delete the item."));
     }
   }
 

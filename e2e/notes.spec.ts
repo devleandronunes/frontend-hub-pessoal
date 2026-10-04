@@ -64,6 +64,56 @@ test("renames and deletes a note from the tree", async ({ page }) => {
 });
 
 //========================================
+// CONTENT WITH SHELL COMMANDS AND ACCENTS
+//========================================
+// Saves content that the hosting firewall
+// used to block (a line starting with
+// `curl ... | sh`) and reloads to confirm
+// it was stored as typed.
+//========================================
+
+test("saves content with shell commands and accents", async ({
+
+ page }) => {
+  const title = uniqueTitle("Conexão servidor");
+  const content = "# Conexão\n```\ncurl -fsSL https://example.com/install.sh | sh\n```";
+
+  await page.getByRole("button", { name: "New note" }).click();
+  await page.getByLabel("Name").fill(title);
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/notes\/[\w-]+/);
+
+  await page.getByRole("button", { name: "Editor" }).click();
+  await page.getByPlaceholder("Write markdown...").fill(content);
+  await expect(page.getByText("Saved")).toBeVisible({ timeout: 3000 });
+
+  await page.reload();
+  await page.getByRole("button", { name: "Editor" }).click()
+  await expect(page.getByPlaceholder("Write markdown...")).toHaveValue(content);
+ });
+
+//========================================
+// DUPLICATE TITLE MESSAGE
+//========================================
+// Creates the same note twice and expects
+// the message sent by the API, not a
+// generic one.
+//========================================
+
+test("shows the API message when a title already exists", async ({
+page }) => {
+  const title = uniqueTitle("Nota duplicada");
+
+  for (let i = 0; i < 2; i++) {
+    await page.getByRole("button", { name: "New note" }).click();
+    await page.getByLabel("Name").fill(title);
+    await page.keyboard.press("Enter");
+  }
+
+  await expect(page.getByText("A note with this title already exists in the same folder.")).toBeVisible();
+});
+
+//========================================
 // AUTHENTICATED SCREEN WITH AN OPEN NOTE
 //========================================
 // More complex than the login screen;

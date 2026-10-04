@@ -1,4 +1,5 @@
 import { getToken } from "@/lib/auth-token";
+import { toBase64 } from "@/lib/base64";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
@@ -34,11 +35,26 @@ function authHeaders(): HeadersInit {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+type ProblemBody = {
+  title?: string;
+  detail?: string;
+  errors?: Record<string, string[]>;
+};
+
 async function handle<T>(response: Response): Promise<T> {
   if (!response.ok) {
-    const body = await response.json().catch(() => null);
-    throw new Error(body?.detail ?? body?.title ?? "Request failed");
-  }
+    if (response.status === 401) {
+      throw new Error("Your session expired. Log in again.");
+    }
+
+    if (response.status === 403) {
+      throw new Error("The server's firewall blocked this request.");
+    }
+
+  const body: ProblemBody | null = await response.json().catch(() => null);
+  const firstValidationError = body?.errors ? Object.values(body.errors).flat()[0] : undefined;
+  throw new Error(body?.detail ?? firstValidationError ?? body?.title ?? `Request failed (${response.status}).`);
+  };
 
   if (response.status === 204) {
     return undefined as T;
@@ -59,7 +75,7 @@ export function createNote(title: string, folderId: string | null): Promise<Note
   return fetch(`${API_URL}/notes`, {
     method: "POST",
     headers: { "Content-Type": "application/json", ...authHeaders() },
-    body: JSON.stringify({ title, content: "", folderId, tags: [] }),
+    body: JSON.stringify({ title, contentBase64: toBase64(""), folderId, tags: [] }),
   }).then((r) => handle(r));
 }
 
@@ -67,7 +83,7 @@ export function updateNote(id: string, title: string, content: string, tags: str
   return fetch(`${API_URL}/notes/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json", ...authHeaders() },
-    body: JSON.stringify({ title, content, tags }),
+    body: JSON.stringify({ title, contentBase64: toBase64(content), tags }),
   }).then((r) => handle(r));
 }
 
