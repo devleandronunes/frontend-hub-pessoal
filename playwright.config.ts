@@ -2,22 +2,22 @@ import path from "node:path";
 import { defineConfig } from "@playwright/test";
 import dotenv from "dotenv";
 
-// Credenciais do usuário seed de dev, pra login() nos specs (e2e/helpers.ts) — carregadas de um
-// arquivo git-ignorado em vez de exigir E2E_USERNAME/E2E_PASSWORD na linha de comando toda vez.
-// Uma variável já definida no ambiente (shell, CI) continua tendo prioridade sobre o arquivo.
+// Dev seed user credentials for login() in the specs (tests/e2e/helpers.ts), loaded from a
+// git-ignored file instead of requiring E2E_USERNAME/E2E_PASSWORD on the command line every time.
+// A variable already set in the environment (shell, CI) still takes precedence over the file.
 dotenv.config({ path: path.resolve(__dirname, ".env.e2e"), quiet: true });
 
 export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: false,
-  // Os specs rodam contra o backend real de dev, sem mock (mesma filosofia do resto do
-  // frontend) — compartilham o mesmo banco, então rodar em paralelo criaria corrida entre
-  // testes que criam/apagam notas e pastas.
+  // The specs run against the real dev backend with no mocks (same approach as the rest of the
+  // frontend) and share the same database, so running them in parallel would race tests that
+  // create and delete notes and folders.
   workers: 1,
   use: {
     baseURL: "http://localhost:3000",
-    // viewport: null deixa a página usar o tamanho real da janela em vez de um viewport fixo —
-    // precisa disso pra --start-maximized (abaixo) realmente ter efeito no modo --headed.
+    // viewport: null lets the page use the real window size instead of a fixed viewport --
+    // needed for --start-maximized (below) to actually take effect in --headed mode.
     viewport: null,
     launchOptions: {
       args: ["--start-maximized"],

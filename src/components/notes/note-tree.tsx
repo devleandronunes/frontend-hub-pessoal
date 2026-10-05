@@ -187,10 +187,10 @@ function InlineInput({
   defaultValue?: string;
 }) {
   const [value, setValue] = useState(defaultValue);
-  // Enter dispara onSubmit e, no mesmo instante, o input desmonta (o pai tira o modo "criando"
-  // da árvore) — perder o foco de um elemento sendo removido do DOM dispara blur, que chamaria
-  // onSubmit de novo com o mesmo valor. Esse guard garante que só a primeira chamada (Enter ou
-  // Escape) realmente propaga; blur depois disso vira no-op.
+  // Enter fires onSubmit and, at the same moment, the input unmounts (the parent leaves the tree's
+  // "creating" mode). Losing focus on an element being removed from the DOM fires blur, which would
+  // call onSubmit again with the same value. This guard lets only the first call (Enter or Escape)
+  // propagate; a blur after that is a no-op.
   const settledRef = useRef(false);
 
   function submit(current: string) {
