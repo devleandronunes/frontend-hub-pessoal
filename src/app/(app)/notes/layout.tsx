@@ -1,16 +1,16 @@
 "use client";
 
 import { PanelLeftCloseIcon, PanelLeftIcon, XIcon } from "lucide-react";
-import { useState } from "react";
 import { NoteTree } from "@/components/notes/note-tree";
 import { NotesTreeProvider, useNotesTree } from "@/components/notes/notes-context";
 import { SyncButton } from "@/components/notes/sync-button";
 import { SyncProvider } from "@/components/notes/sync-context";
 import { Alert, AlertAction, AlertDescription } from "@/components/ui/alert";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { usePersistentBoolean } from "@/hooks/use-persistent-boolean";
 
 export default function NotesLayout({ children }: { children: React.ReactNode }) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = usePersistentBoolean("hub-pessoal:notes-sidebar-open", true);
 
   return (
     <NotesTreeProvider>
