@@ -8,7 +8,7 @@ import dotenv from "dotenv";
 dotenv.config({ path: path.resolve(__dirname, ".env.e2e"), quiet: true });
 
 export default defineConfig({
-  testDir: "./e2e",
+  testDir: "./tests/e2e",
   fullyParallel: false,
   // Os specs rodam contra o backend real de dev, sem mock (mesma filosofia do resto do
   // frontend) — compartilham o mesmo banco, então rodar em paralelo criaria corrida entre
