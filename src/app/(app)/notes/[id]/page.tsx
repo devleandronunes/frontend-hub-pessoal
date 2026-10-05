@@ -4,6 +4,7 @@ import { CopyIcon, DownloadIcon, PinIcon } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { CodeBlock } from "@/components/notes/code-block";
 import { useNotesTree } from "@/components/notes/notes-context";
 import { useSync } from "@/components/notes/sync-context";
 import { Button } from "@/components/ui/button";
@@ -175,7 +176,9 @@ function NoteEditor({ id }: { id: string }) {
           />
         ) : (
           <div className="prose max-w-none">
-            <ReactMarkdown>{content}</ReactMarkdown>
+            <ReactMarkdown components={{ pre: ({ node: _node, ...props }) => <CodeBlock {...props} /> }}>
+              {content}
+            </ReactMarkdown>
           </div>
         )}
       </div>
