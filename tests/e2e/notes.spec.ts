@@ -101,11 +101,14 @@ test("saves content with shell commands and accents", async ({ page }) => {
 test("shows the API message when a title already exists", async ({ page }) => {
   const title = uniqueTitle("Nota duplicada");
 
-  for (let i = 0; i < 2; i++) {
-    await page.getByRole("button", { name: "New note" }).click();
-    await page.getByLabel("Name").fill(title);
-    await page.keyboard.press("Enter");
-  }
+  await page.getByRole("button", { name: "New note" }).click();
+  await page.getByLabel("Name").fill(title);
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/notes\/[\w-]+/);
+
+  await page.getByRole("button", { name: "New note" }).click();
+  await page.getByLabel("Name").fill(title);
+  await page.keyboard.press("Enter");
 
   await expect(page.getByText("A note with this title already exists in the same folder.")).toBeVisible();
 });
