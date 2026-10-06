@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
 	AlertDialog,
 	AlertDialogAction,
@@ -197,6 +197,11 @@ function InlineInput({
 	// call onSubmit again with the same value. This guard lets only the first call (Enter or Escape)
 	// propagate; a blur after that is a no-op.
 	const settledRef = useRef(false);
+	const inputRef = useRef<HTMLInputElement>(null);
+
+	useEffect(() => {
+		inputRef.current?.focus();
+	}, []);
 
 	function submit(current: string) {
 		if (settledRef.current) {
@@ -216,9 +221,8 @@ function InlineInput({
 
 	return (
 		<input
+			ref={inputRef}
 			aria-label='Name'
-			// biome-ignore lint/a11y/noAutofocus: inline create/rename input must take focus immediately, like VS Code
-			autoFocus
 			value={value}
 			onChange={(e) => setValue(e.target.value)}
 			onKeyDown={(e) => {

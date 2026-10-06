@@ -19,9 +19,7 @@ export function usePersistentBoolean(key: string, defaultValue: boolean) {
 	useEffect(() => {
 		try {
 			window.localStorage.setItem(key, String(value));
-		} catch {
-			// Storage can be unavailable (private mode, blocked site data): the toggle still works for this session.
-		}
+		} catch {}
 	}, [key, value]);
 
 	return [value, setValue] as const;

@@ -18,6 +18,7 @@ test('creates, renames, and deletes an empty folder', async ({ page }) => {
 	const renamed = uniqueTitle('Pasta renomeada');
 
 	await page.getByRole('button', { name: 'New folder' }).click();
+	await expect(page.getByLabel('Name')).toBeFocused();
 	await page.getByLabel('Name').fill(name);
 	await page.keyboard.press('Enter');
 
