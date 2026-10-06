@@ -1,9 +1,9 @@
-import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
-import { login } from "./helpers";
+import AxeBuilder from '@axe-core/playwright';
+import { expect, test } from '@playwright/test';
+import { login } from './helpers';
 
 test.beforeEach(async ({ page }) => {
-  await login(page);
+	await login(page);
 });
 
 //========================================
@@ -15,24 +15,26 @@ test.beforeEach(async ({ page }) => {
 // survives a reload.
 //========================================
 
-test("minimizes the app sidebar to an icon rail and remembers it", async ({ page }) => {
-  await page.getByRole("button", { name: "Minimize app sidebar" }).click();
+test('minimizes the app sidebar to an icon rail and remembers it', async ({ page }) => {
+	await page.getByRole('button', { name: 'Minimize app sidebar' }).click();
 
-  await expect(page.getByRole("heading", { name: "Personal Hub" })).toBeHidden();
-  await expect(page.getByRole("link", { name: "Notes" })).toHaveAttribute("aria-current", "page");
-  await expect(page.getByRole("link", { name: "Home" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Log out" })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Personal Hub' })).toBeHidden();
+	await expect(page.getByRole('link', { name: 'Notes' })).toHaveAttribute('aria-current', 'page');
+	await expect(page.getByRole('link', { name: 'Home' })).toBeVisible();
+	await expect(page.getByRole('button', { name: 'Log out' })).toBeVisible();
 
-  const results = await new AxeBuilder({ page }).analyze();
-  const serious = results.violations.filter((v) => v.impact === "critical" || v.impact === "serious");
-  expect(serious).toEqual([]);
+	const results = await new AxeBuilder({ page }).analyze();
+	const serious = results.violations.filter(
+		(v) => v.impact === 'critical' || v.impact === 'serious',
+	);
+	expect(serious).toEqual([]);
 
-  await page.reload();
-  await expect(page.getByRole("button", { name: "Expand app sidebar" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Personal Hub" })).toBeHidden();
+	await page.reload();
+	await expect(page.getByRole('button', { name: 'Expand app sidebar' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'Personal Hub' })).toBeHidden();
 
-  await page.getByRole("button", { name: "Expand app sidebar" }).click();
-  await expect(page.getByRole("heading", { name: "Personal Hub" })).toBeVisible();
+	await page.getByRole('button', { name: 'Expand app sidebar' }).click();
+	await expect(page.getByRole('heading', { name: 'Personal Hub' })).toBeVisible();
 });
 
 //========================================
@@ -43,13 +45,13 @@ test("minimizes the app sidebar to an icon rail and remembers it", async ({ page
 // is expanded again.
 //========================================
 
-test("remembers the collapsed notes tree after a reload", async ({ page }) => {
-  await page.getByRole("button", { name: "Collapse sidebar" }).click();
-  await expect(page.getByRole("button", { name: "New note" })).toBeHidden();
+test('remembers the collapsed notes tree after a reload', async ({ page }) => {
+	await page.getByRole('button', { name: 'Collapse sidebar' }).click();
+	await expect(page.getByRole('button', { name: 'New note' })).toBeHidden();
 
-  await page.reload();
-  await expect(page.getByRole("button", { name: "New note" })).toBeHidden();
+	await page.reload();
+	await expect(page.getByRole('button', { name: 'New note' })).toBeHidden();
 
-  await page.getByRole("button", { name: "Expand sidebar" }).click();
-  await expect(page.getByRole("button", { name: "New note" })).toBeVisible();
+	await page.getByRole('button', { name: 'Expand sidebar' }).click();
+	await expect(page.getByRole('button', { name: 'New note' })).toBeVisible();
 });

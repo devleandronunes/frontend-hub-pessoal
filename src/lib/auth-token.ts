@@ -1,17 +1,17 @@
-const TOKEN_KEY = "hub-pessoal:token";
+const TOKEN_KEY = 'hub-pessoal:token';
 
 export function getToken(): string | null {
-  if (typeof window === "undefined") {
-    return null;
-  }
+	if (typeof window === 'undefined') {
+		return null;
+	}
 
-  return localStorage.getItem(TOKEN_KEY);
+	return localStorage.getItem(TOKEN_KEY);
 }
 
 export function setToken(token: string): void {
-  localStorage.setItem(TOKEN_KEY, token);
+	localStorage.setItem(TOKEN_KEY, token);
 }
 
 export function clearToken(): void {
-  localStorage.removeItem(TOKEN_KEY);
+	localStorage.removeItem(TOKEN_KEY);
 }

@@ -1,9 +1,9 @@
-import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
-import { login, uniqueTitle } from "./helpers";
+import AxeBuilder from '@axe-core/playwright';
+import { expect, test } from '@playwright/test';
+import { login, uniqueTitle } from './helpers';
 
 test.beforeEach(async ({ page }) => {
-  await login(page);
+	await login(page);
 });
 
 //========================================
@@ -14,22 +14,22 @@ test.beforeEach(async ({ page }) => {
 // the content in the preview.
 //========================================
 
-test("creates a note, edits it, and confirms auto-save", async ({ page }) => {
-  const title = uniqueTitle("Nota E2E");
+test('creates a note, edits it, and confirms auto-save', async ({ page }) => {
+	const title = uniqueTitle('Nota E2E');
 
-  await page.getByRole("button", { name: "New note" }).click();
-  await page.getByLabel("Name").fill(title);
-  await page.keyboard.press("Enter");
+	await page.getByRole('button', { name: 'New note' }).click();
+	await page.getByLabel('Name').fill(title);
+	await page.keyboard.press('Enter');
 
-  await expect(page).toHaveURL(/\/notes\/[\w-]+/);
+	await expect(page).toHaveURL(/\/notes\/[\w-]+/);
 
-  await page.getByRole("button", { name: "Editor" }).click();
-  await page.getByPlaceholder("Write markdown...").fill("Conteúdo escrito pelo Playwright.");
+	await page.getByRole('button', { name: 'Editor' }).click();
+	await page.getByPlaceholder('Write markdown...').fill('Conteúdo escrito pelo Playwright.');
 
-  await expect(page.getByText("Saved")).toBeVisible({ timeout: 3000 });
+	await expect(page.getByText('Saved')).toBeVisible({ timeout: 3000 });
 
-  await page.getByRole("button", { name: "Preview" }).click();
-  await expect(page.getByText("Conteúdo escrito pelo Playwright.")).toBeVisible();
+	await page.getByRole('button', { name: 'Preview' }).click();
+	await expect(page.getByText('Conteúdo escrito pelo Playwright.')).toBeVisible();
 });
 
 //========================================
@@ -39,28 +39,28 @@ test("creates a note, edits it, and confirms auto-save", async ({ page }) => {
 // and deletes it after confirming.
 //========================================
 
-test("renames and deletes a note from the tree", async ({ page }) => {
-  const title = uniqueTitle("Nota para apagar");
-  const renamed = uniqueTitle("Nota renomeada");
+test('renames and deletes a note from the tree', async ({ page }) => {
+	const title = uniqueTitle('Nota para apagar');
+	const renamed = uniqueTitle('Nota renomeada');
 
-  await page.getByRole("button", { name: "New note" }).click();
-  await page.getByLabel("Name").fill(title);
-  await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(/\/notes\/[\w-]+/);
+	await page.getByRole('button', { name: 'New note' }).click();
+	await page.getByLabel('Name').fill(title);
+	await page.keyboard.press('Enter');
+	await expect(page).toHaveURL(/\/notes\/[\w-]+/);
 
-  const treeItem = page.getByText(title, { exact: true });
-  await treeItem.click({ button: "right" });
-  await page.getByRole("menuitem", { name: "Rename" }).click();
-  await page.getByLabel("Name").fill(renamed);
-  await page.keyboard.press("Enter");
+	const treeItem = page.getByText(title, { exact: true });
+	await treeItem.click({ button: 'right' });
+	await page.getByRole('menuitem', { name: 'Rename' }).click();
+	await page.getByLabel('Name').fill(renamed);
+	await page.keyboard.press('Enter');
 
-  await expect(page.getByText(renamed, { exact: true })).toBeVisible();
+	await expect(page.getByText(renamed, { exact: true })).toBeVisible();
 
-  await page.getByText(renamed, { exact: true }).click({ button: "right" });
-  await page.getByRole("menuitem", { name: "Delete" }).click();
-  await page.getByRole("button", { name: "Delete" }).click();
+	await page.getByText(renamed, { exact: true }).click({ button: 'right' });
+	await page.getByRole('menuitem', { name: 'Delete' }).click();
+	await page.getByRole('button', { name: 'Delete' }).click();
 
-  await expect(page.getByText(renamed, { exact: true })).not.toBeVisible();
+	await expect(page.getByText(renamed, { exact: true })).not.toBeVisible();
 });
 
 //========================================
@@ -72,22 +72,22 @@ test("renames and deletes a note from the tree", async ({ page }) => {
 // it was stored as typed.
 //========================================
 
-test("saves content with shell commands and accents", async ({ page }) => {
-  const title = uniqueTitle("Conexão servidor");
-  const content = "# Conexão\n```\ncurl -fsSL https://example.com/install.sh | sh\n```";
+test('saves content with shell commands and accents', async ({ page }) => {
+	const title = uniqueTitle('Conexão servidor');
+	const content = '# Conexão\n```\ncurl -fsSL https://example.com/install.sh | sh\n```';
 
-  await page.getByRole("button", { name: "New note" }).click();
-  await page.getByLabel("Name").fill(title);
-  await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(/\/notes\/[\w-]+/);
+	await page.getByRole('button', { name: 'New note' }).click();
+	await page.getByLabel('Name').fill(title);
+	await page.keyboard.press('Enter');
+	await expect(page).toHaveURL(/\/notes\/[\w-]+/);
 
-  await page.getByRole("button", { name: "Editor" }).click();
-  await page.getByPlaceholder("Write markdown...").fill(content);
-  await expect(page.getByText("Saved")).toBeVisible({ timeout: 3000 });
+	await page.getByRole('button', { name: 'Editor' }).click();
+	await page.getByPlaceholder('Write markdown...').fill(content);
+	await expect(page.getByText('Saved')).toBeVisible({ timeout: 3000 });
 
-  await page.reload();
-  await page.getByRole("button", { name: "Editor" }).click();
-  await expect(page.getByPlaceholder("Write markdown...")).toHaveValue(content);
+	await page.reload();
+	await page.getByRole('button', { name: 'Editor' }).click();
+	await expect(page.getByPlaceholder('Write markdown...')).toHaveValue(content);
 });
 
 //========================================
@@ -98,19 +98,21 @@ test("saves content with shell commands and accents", async ({ page }) => {
 // generic one.
 //========================================
 
-test("shows the API message when a title already exists", async ({ page }) => {
-  const title = uniqueTitle("Nota duplicada");
+test('shows the API message when a title already exists', async ({ page }) => {
+	const title = uniqueTitle('Nota duplicada');
 
-  await page.getByRole("button", { name: "New note" }).click();
-  await page.getByLabel("Name").fill(title);
-  await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(/\/notes\/[\w-]+/);
+	await page.getByRole('button', { name: 'New note' }).click();
+	await page.getByLabel('Name').fill(title);
+	await page.keyboard.press('Enter');
+	await expect(page).toHaveURL(/\/notes\/[\w-]+/);
 
-  await page.getByRole("button", { name: "New note" }).click();
-  await page.getByLabel("Name").fill(title);
-  await page.keyboard.press("Enter");
+	await page.getByRole('button', { name: 'New note' }).click();
+	await page.getByLabel('Name').fill(title);
+	await page.keyboard.press('Enter');
 
-  await expect(page.getByText("A note with this title already exists in the same folder.")).toBeVisible();
+	await expect(
+		page.getByText('A note with this title already exists in the same folder.'),
+	).toBeVisible();
 });
 
 //========================================
@@ -120,16 +122,18 @@ test("shows the API message when a title already exists", async ({ page }) => {
 // covers the editor/preview.
 //========================================
 
-test("notes shell has no serious a11y violations", async ({ page }) => {
-  const title = uniqueTitle("Nota a11y");
+test('notes shell has no serious a11y violations', async ({ page }) => {
+	const title = uniqueTitle('Nota a11y');
 
-  await page.getByRole("button", { name: "New note" }).click();
-  await page.getByLabel("Name").fill(title);
-  await page.keyboard.press("Enter");
-  await expect(page).toHaveURL(/\/notes\/[\w-]+/);
+	await page.getByRole('button', { name: 'New note' }).click();
+	await page.getByLabel('Name').fill(title);
+	await page.keyboard.press('Enter');
+	await expect(page).toHaveURL(/\/notes\/[\w-]+/);
 
-  const results = await new AxeBuilder({ page }).analyze();
-  const serious = results.violations.filter((v) => v.impact === "critical" || v.impact === "serious");
+	const results = await new AxeBuilder({ page }).analyze();
+	const serious = results.violations.filter(
+		(v) => v.impact === 'critical' || v.impact === 'serious',
+	);
 
-  expect(serious).toEqual([]);
+	expect(serious).toEqual([]);
 });

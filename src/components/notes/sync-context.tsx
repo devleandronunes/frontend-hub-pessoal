@@ -1,54 +1,58 @@
-"use client";
+'use client';
 
-import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from "react";
-import { getSyncStatus, type SyncStatus } from "@/services/sync-service";
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useState } from 'react';
+import { getSyncStatus, type SyncStatus } from '@/services/sync-service';
 
 type SyncContextValue = {
-  status: SyncStatus | null;
-  loading: boolean;
-  justSynced: boolean;
-  refreshStatus: (options?: { justSynced?: boolean }) => Promise<void>;
+	status: SyncStatus | null;
+	loading: boolean;
+	justSynced: boolean;
+	refreshStatus: (options?: { justSynced?: boolean }) => Promise<void>;
 };
 
 const SyncContext = createContext<SyncContextValue | null>(null);
 
 export function SyncProvider({ children }: { children: ReactNode }) {
-  const [status, setStatus] = useState<SyncStatus | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [justSynced, setJustSynced] = useState(false);
+	const [status, setStatus] = useState<SyncStatus | null>(null);
+	const [loading, setLoading] = useState(true);
+	const [justSynced, setJustSynced] = useState(false);
 
-  const refreshStatus = useCallback(async (options?: { justSynced?: boolean }) => {
-    if (options?.justSynced) {
-      setJustSynced(true);
-    }
+	const refreshStatus = useCallback(async (options?: { justSynced?: boolean }) => {
+		if (options?.justSynced) {
+			setJustSynced(true);
+		}
 
-    const data = await getSyncStatus();
-    setStatus(data);
-  }, []);
+		const data = await getSyncStatus();
+		setStatus(data);
+	}, []);
 
-  useEffect(() => {
-    getSyncStatus()
-      .then((data) => setStatus(data))
-      .finally(() => setLoading(false));
-  }, []);
+	useEffect(() => {
+		getSyncStatus()
+			.then((data) => setStatus(data))
+			.finally(() => setLoading(false));
+	}, []);
 
-  useEffect(() => {
-    if (!justSynced) {
-      return;
-    }
+	useEffect(() => {
+		if (!justSynced) {
+			return;
+		}
 
-    const timeout = setTimeout(() => setJustSynced(false), 4000);
-    return () => clearTimeout(timeout);
-  }, [justSynced]);
+		const timeout = setTimeout(() => setJustSynced(false), 4000);
+		return () => clearTimeout(timeout);
+	}, [justSynced]);
 
-  return <SyncContext.Provider value={{ status, loading, justSynced, refreshStatus }}>{children}</SyncContext.Provider>;
+	return (
+		<SyncContext.Provider value={{ status, loading, justSynced, refreshStatus }}>
+			{children}
+		</SyncContext.Provider>
+	);
 }
 
 export function useSync() {
-  const context = useContext(SyncContext);
-  if (!context) {
-    throw new Error("useSync must be used inside SyncProvider");
-  }
+	const context = useContext(SyncContext);
+	if (!context) {
+		throw new Error('useSync must be used inside SyncProvider');
+	}
 
-  return context;
+	return context;
 }

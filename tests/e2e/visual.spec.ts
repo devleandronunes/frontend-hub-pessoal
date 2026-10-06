@@ -1,5 +1,5 @@
-import { expect, test } from "@playwright/test";
-import { login } from "./helpers";
+import { expect, test } from '@playwright/test';
+import { login } from './helpers';
 
 // Snapshots only of the screens where the hub's own visual identity (RetroUI theme + hub palette)
 // shows the most. The goal is not full screen coverage, only catching a badly broken theme.
@@ -24,9 +24,9 @@ const SCREENSHOT_OPTIONS = { maxDiffPixelRatio: 0.02 };
 // baseline in visual.spec.ts-snapshots.
 //========================================
 
-test("login screen visual snapshot", async ({ page }) => {
-  await page.goto("/login");
-  await expect(page).toHaveScreenshot("login.png", SCREENSHOT_OPTIONS);
+test('login screen visual snapshot', async ({ page }) => {
+	await page.goto('/login');
+	await expect(page).toHaveScreenshot('login.png', SCREENSHOT_OPTIONS);
 });
 
 //========================================
@@ -37,17 +37,17 @@ test("login screen visual snapshot", async ({ page }) => {
 // button are masked (see inside).
 //========================================
 
-test("notes shell visual snapshot", async ({ page }) => {
-  await login(page);
+test('notes shell visual snapshot', async ({ page }) => {
+	await login(page);
 
-  // The notes tree (aside) and the sync button change content/color with the real state of the
-  // dev database and repository (other specs create notes without deleting them, and the sync
-  // state varies) -- masked so only the chrome/theme (header, borders, spacing) is compared.
-  await expect(page).toHaveScreenshot("notes-shell.png", {
-    ...SCREENSHOT_OPTIONS,
-    mask: [
-      page.locator("aside"),
-      page.getByRole("button", { name: /Synced|Sync|Local changes|Remote changes|Diverged/ }),
-    ],
-  });
+	// The notes tree (aside) and the sync button change content/color with the real state of the
+	// dev database and repository (other specs create notes without deleting them, and the sync
+	// state varies) -- masked so only the chrome/theme (header, borders, spacing) is compared.
+	await expect(page).toHaveScreenshot('notes-shell.png', {
+		...SCREENSHOT_OPTIONS,
+		mask: [
+			page.locator('aside'),
+			page.getByRole('button', { name: /Synced|Sync|Local changes|Remote changes|Diverged/ }),
+		],
+	});
 });
