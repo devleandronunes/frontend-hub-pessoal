@@ -39,16 +39,46 @@ import {
 	createNote,
 	deleteFolder,
 	deleteNote,
+	moveFolder,
+	moveNote,
 	type NoteTreeNode,
 	renameFolder,
 	renameNote,
 } from '@/services/notes-service';
 import { useNotesTree } from './notes-context';
 import { useSync } from './sync-context';
+import { type DragItem, TreeDndProvider, TreeRoot, useTreeItem } from './tree-dnd';
 
 type Creating = { parentId: string | null; type: 'note' | 'folder' } | null;
 
 export function NoteTree() {
+	const { tree, refreshTree, showError } = useNotesTree();
+	const { refreshStatus } = useSync();
+
+	async function handleMove(item: DragItem, folderId: string | null) {
+		try {
+			if (item.type === 'note') {
+				await moveNote(item.id, folderId);
+			} else {
+				await moveFolder(item.id, folderId);
+			}
+			await refreshTree();
+			void refreshStatus();
+			return true;
+		} catch (error) {
+			showError(getErrorMessage(error, "Couldn't move the item."));
+			return false;
+		}
+	}
+
+	return (
+		<TreeDndProvider tree={tree} onMove={handleMove}>
+			<NoteTreeContent />
+		</TreeDndProvider>
+	);
+}
+
+function NoteTreeContent() {
 	const { tree, refreshTree, showError } = useNotesTree();
 	const { refreshStatus } = useSync();
 	const [creating, setCreating] = useState<Creating>(null);
@@ -120,7 +150,7 @@ export function NoteTree() {
 	}
 
 	return (
-		<div className='flex flex-col gap-1'>
+		<TreeRoot>
 			<div className='flex items-center justify-between px-1'>
 				<span className='font-medium text-muted-foreground text-xs uppercase tracking-wide'>
 					Notes
@@ -167,6 +197,7 @@ export function NoteTree() {
 				<TreeNode
 					key={node.id}
 					node={node}
+					parentId={null}
 					depth={0}
 					creating={creating}
 					onStartCreate={setCreating}
@@ -176,7 +207,7 @@ export function NoteTree() {
 					onDelete={handleDelete}
 				/>
 			))}
-		</div>
+		</TreeRoot>
 	);
 }
 
@@ -242,6 +273,7 @@ function InlineInput({
 
 function TreeNode({
 	node,
+	parentId,
 	depth,
 	creating,
 	onStartCreate,
@@ -251,6 +283,7 @@ function TreeNode({
 	onDelete,
 }: {
 	node: NoteTreeNode;
+	parentId: string | null;
 	depth: number;
 	creating: Creating;
 	onStartCreate: (c: Creating) => void;
@@ -264,6 +297,22 @@ function TreeNode({
 	const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 	const params = useParams<{ id?: string }>();
 	const isActive = node.type === 'note' && params.id === node.id;
+	const { ref, dragProps, isDragging, isDropTarget, movedInto } = useTreeItem(node, parentId);
+
+	useEffect(() => {
+		if (!isDropTarget || expanded) {
+			return;
+		}
+
+		const timeout = setTimeout(() => setExpanded(true), 600);
+		return () => clearTimeout(timeout);
+	}, [isDropTarget, expanded]);
+
+	useEffect(() => {
+		if (movedInto === node.id) {
+			setExpanded(true);
+		}
+	}, [movedInto, node.id]);
 
 	const deleteDialog = (
 		<AlertDialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
@@ -317,11 +366,16 @@ function TreeNode({
 					<ContextMenuTrigger
 						render={
 							<button
+								ref={ref}
+								{...dragProps}
 								type='button'
+								aria-expanded={expanded}
 								onClick={() => setExpanded((v) => !v)}
 								onDoubleClick={() => setEditing(true)}
 								className={cn(
 									'flex w-full items-center gap-1 rounded py-1 pr-1 text-left text-sm hover:bg-accent',
+									isDragging && 'opacity-50',
+									isDropTarget && 'bg-accent ring-2 ring-primary ring-inset',
 								)}
 								style={{ paddingLeft: `${depth * 16 + 4}px` }}
 							/>
@@ -374,6 +428,7 @@ function TreeNode({
 							<TreeNode
 								key={child.id}
 								node={child}
+								parentId={node.id}
 								depth={depth + 1}
 								creating={creating}
 								onStartCreate={onStartCreate}
@@ -395,6 +450,9 @@ function TreeNode({
 				<ContextMenuTrigger
 					render={
 						<Link
+							ref={ref}
+							{...dragProps}
+							draggable={false}
 							href={`/notes/${node.id}`}
 							onDoubleClick={(e) => {
 								e.preventDefault();
@@ -403,6 +461,7 @@ function TreeNode({
 							className={cn(
 								'flex items-center gap-1 rounded py-1 pr-1 text-sm hover:bg-accent',
 								isActive && 'bg-accent',
+								isDragging && 'opacity-50',
 							)}
 							style={{ paddingLeft: `${depth * 16 + 4}px` }}
 						/>

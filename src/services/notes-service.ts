@@ -153,3 +153,19 @@ export function deleteFolder(id: string): Promise<void> {
 		handle(r),
 	);
 }
+
+export function moveNote(id: string, folderId: string | null): Promise<void> {
+	return fetch(`${API_URL}/notes/${id}/move`, {
+		method: 'PATCH',
+		headers: { 'Content-Type': 'application/json', ...authHeaders() },
+		body: JSON.stringify({ folderId }),
+	}).then((r) => handle(r));
+}
+
+export function moveFolder(id: string, parentFolderId: string | null): Promise<void> {
+	return fetch(`${API_URL}/folders/${id}/move`, {
+		method: 'PATCH',
+		headers: { 'Content-Type': 'application/json', ...authHeaders() },
+		body: JSON.stringify({ parentFolderId }),
+	}).then((r) => handle(r));
+}
