@@ -348,7 +348,7 @@ function TreeNode({
 						<ContextMenuItem
 							onClick={() => {
 								setExpanded(true);
-								onStartCreate({ parentId: node.id, type: 'note' });
+								onStartCreate({ parentId: node.id, type: 'folder' });
 							}}
 						>
 							<FolderPlusIcon /> New folder
