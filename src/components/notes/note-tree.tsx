@@ -98,7 +98,7 @@ export function NoteTree() {
 			await refreshTree();
 			void refreshStatus();
 		} catch (error) {
-			showError(getErrorMessage(error, "Coulnd't rename the item."));
+			showError(getErrorMessage(error, "Couldn't rename the item."));
 		}
 	}
 
