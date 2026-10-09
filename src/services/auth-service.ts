@@ -9,8 +9,12 @@ export async function login(username: string, password: string): Promise<string>
 		body: JSON.stringify({ username, password }),
 	});
 
-	if (!response.ok) {
+	if (response.status === 401) {
 		throw new Error('Invalid username or password.');
+	}
+
+	if (!response.ok) {
+		throw new Error(`Login failed (${response.status})`);
 	}
 
 	const data = await response.json();

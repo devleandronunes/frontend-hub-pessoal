@@ -34,6 +34,8 @@ test('login with wrong password shows an error and stays on the page', async ({ 
 });
 
 //========================================
+// LOGIN WITH THE API UNREACHABLE
+//========================================
 // LOGIN SCREEN ACCESSIBILITY
 //========================================
 // Fails only on critical or serious axe

@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { setToken } from '@/lib/auth-token';
+import { getErrorMessage } from '@/lib/error-message';
 import { login } from '@/services/auth-service';
 
 export default function LoginPage() {
@@ -35,7 +36,7 @@ export default function LoginPage() {
 			setToken(token);
 			router.push('/');
 		} catch {
-			setError('Invalid username or password.');
+			setError(getErrorMessage(error, 'Login failed.'));
 		} finally {
 			setLoading(false);
 		}
