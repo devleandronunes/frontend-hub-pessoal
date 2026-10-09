@@ -46,8 +46,9 @@ function NoteEditor({ id }: { id: string }) {
 				setNote(data);
 				setContent(data.content);
 			})
+			.catch((error) => showError(getErrorMessage(error, "Couldn't open the note.")))
 			.finally(() => setLoading(false));
-	}, [id]);
+	}, [id, showError]);
 
 	function handleContentChange(value: string) {
 		setContent(value);
@@ -83,30 +84,39 @@ function NoteEditor({ id }: { id: string }) {
 		if (!note) {
 			return;
 		}
-
-		const updated = await togglePin(note.id);
-		setNote(updated);
-		await refreshTree();
-		void refreshStatus();
+		try {
+			const updated = await togglePin(note.id);
+			setNote(updated);
+			await refreshTree();
+			void refreshStatus();
+		} catch (error) {
+			showError(getErrorMessage(error, "Couldn't pin the note."));
+		}
 	}
 
 	async function handleDuplicate() {
 		if (!note) {
 			return;
 		}
-
-		const copy = await duplicateNote(note.id);
-		await refreshTree();
-		void refreshStatus();
-		router.push(`/notes/${copy.id}`);
+		try {
+			const copy = await duplicateNote(note.id);
+			await refreshTree();
+			void refreshStatus();
+			router.push(`/notes/${copy.id}`);
+		} catch (error) {
+			showError(getErrorMessage(error, "Couldn't duplicate the note."));
+		}
 	}
 
 	async function handleExport() {
 		if (!note) {
 			return;
 		}
-
-		await exportNote(note.id, note.title);
+		try {
+			await exportNote(note.id, note.title);
+		} catch (error) {
+			showError(getErrorMessage(error, "Couldn't export the note."));
+		}
 	}
 
 	if (loading) {

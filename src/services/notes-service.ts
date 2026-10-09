@@ -51,6 +51,10 @@ async function handle<T>(response: Response): Promise<T> {
 			throw new Error("The server's firewall blocked this request.");
 		}
 
+		if (response.status === 404) {
+			throw new Error('That note or folder no longer exists.');
+		}
+
 		const body: ProblemBody | null = await response.json().catch(() => null);
 		const firstValidationError = body?.errors ? Object.values(body.errors).flat()[0] : undefined;
 		throw new Error(
