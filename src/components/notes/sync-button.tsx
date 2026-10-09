@@ -15,8 +15,15 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { getErrorMessage } from '@/lib/error-message';
 import { cn } from '@/lib/utils';
-import { applySync, previewSync, type SyncPlan, type SyncState } from '@/services/sync-service';
+import {
+	type ApplySyncResult,
+	applySync,
+	previewSync,
+	type SyncPlan,
+	type SyncState,
+} from '@/services/sync-service';
 import { useNotesTree } from './notes-context';
 import { useSync } from './sync-context';
 
@@ -69,7 +76,15 @@ export function SyncButton() {
 		}
 
 		setApplying(true);
-		const result = await applySync(plan.fingerprint);
+		let result: ApplySyncResult;
+		try {
+			result = await applySync(plan.fingerprint);
+		} catch (error) {
+			setApplying(false);
+			setOpen(false);
+			showError(getErrorMessage(error, 'Sync failed. Try again in a moment.'));
+			return;
+		}
 		setApplying(false);
 
 		switch (result.kind) {

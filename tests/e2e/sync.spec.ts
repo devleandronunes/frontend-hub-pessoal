@@ -2,6 +2,8 @@ import { expect, test } from '@playwright/test';
 import { login, uniqueTitle } from './helpers';
 
 //========================================
+// SYNC REQUEST FAILURE
+//========================================
 // SYNC ROUND TRIP
 //========================================
 // Creates a note, confirms the sync plan
