@@ -36,6 +36,24 @@ test('login with wrong password shows an error and stays on the page', async ({ 
 //========================================
 // LOGIN WITH THE API UNREACHABLE
 //========================================
+// Shows that the server can't be reached
+// instead of blaming the credentials.
+//========================================
+
+test('login with the API unreachable shows a connection error', async ({ page }) => {
+	await page.route('**/auth/login', (route) => route.abort());
+	await page.goto('/login');
+	await page.getByLabel('Username').fill(E2E_USERNAME || 'dev-user');
+	await page.getByLabel('Password').fill('any-password');
+	await page.getByRole('button', { name: 'Login' }).click();
+
+	await expect(
+		page.getByText("Couldn't reach the server. Check your connection and try again."),
+	).toBeVisible();
+	await expect(page.getByText('Invalid username or password.')).toBeHidden();
+});
+
+//========================================
 // LOGIN SCREEN ACCESSIBILITY
 //========================================
 // Fails only on critical or serious axe

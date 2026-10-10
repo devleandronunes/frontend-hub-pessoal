@@ -35,7 +35,7 @@ export default function LoginPage() {
 			const token = await login(username, password);
 			setToken(token);
 			router.push('/');
-		} catch {
+		} catch (error) {
 			setError(getErrorMessage(error, 'Login failed.'));
 		} finally {
 			setLoading(false);
