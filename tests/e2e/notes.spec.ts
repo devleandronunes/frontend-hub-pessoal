@@ -137,3 +137,41 @@ test('notes shell has no serious a11y violations', async ({ page }) => {
 
 	expect(serious).toEqual([]);
 });
+
+//========================================
+// SESSION EXPIRED MESSAGE
+//========================================
+// Replaces the token with an invalid one
+// and expects the API client to turn the
+// 401 into the session expired message.
+//========================================
+
+test('shows the session expired message when the token is invalid', async ({ page }) => {
+	await page.evaluate(() => localStorage.setItem('hub-pessoal:token', 'invalid-token'));
+
+	await page.getByRole('button', { name: 'New note' }).click();
+	await page.getByLabel('Name').fill(uniqueTitle('Nota sessao'));
+	await page.keyboard.press('Enter');
+
+	await expect(page.getByText('Your session expired. Log in again.')).toBeVisible();
+});
+
+//========================================
+// CONNECTION ERROR MESSAGE
+//========================================
+// Cuts the create request and expects the
+// message for a server that can't be
+// reached.
+//========================================
+
+test('shows the connection error message when the API is unreachable', async ({ page }) => {
+	await page.route('**/notes', (route) => route.abort());
+
+	await page.getByRole('button', { name: 'New note' }).click();
+	await page.getByLabel('Name').fill(uniqueTitle('Nota offline'));
+	await page.keyboard.press('Enter');
+
+	await expect(
+		page.getByText("Couldn't reach the server. Check your connection and try again."),
+	).toBeVisible();
+});
