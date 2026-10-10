@@ -1,6 +1,4 @@
-import { getToken } from '@/lib/auth-token';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+import { apiClient } from '@/lib/api-client';
 
 export type SyncState = 'Clean' | 'LocalChanges' | 'RemoteChanges' | 'Diverged';
 
@@ -59,67 +57,50 @@ export type ApplySyncResult =
 	| { kind: 'conflict'; detail: string }
 	| { kind: 'gitFailure'; detail: string };
 
-function authHeaders(): HeadersInit {
-	const token = getToken();
-	return token ? { Authorization: `Bearer ${token}` } : {};
+export async function getSyncStatus(): Promise<SyncStatus> {
+	const { data } = await apiClient.get<SyncStatus>('/sync/status');
+	return data;
 }
 
-async function handle<T>(response: Response): Promise<T> {
-	if (!response.ok) {
-		const body = await response.json().catch(() => null);
-		throw new Error(body?.detail ?? body?.title ?? 'Request failed');
-	}
-
-	if (response.status === 204) {
-		return undefined as T;
-	}
-
-	return response.json();
-}
-
-export function getSyncStatus(): Promise<SyncStatus> {
-	return fetch(`${API_URL}/sync/status`, { headers: authHeaders() }).then((r) => handle(r));
-}
-
-export function previewSync(): Promise<SyncPlan> {
-	return fetch(`${API_URL}/sync/preview`, { method: 'POST', headers: authHeaders() }).then((r) =>
-		handle(r),
-	);
+export async function previewSync(): Promise<SyncPlan> {
+	const { data } = await apiClient.post<SyncPlan>('/sync/preview');
+	return data;
 }
 
 export async function applySync(fingerprint: string): Promise<ApplySyncResult> {
-	const response = await fetch(`${API_URL}/sync/apply`, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json', ...authHeaders() },
-		body: JSON.stringify({ fingerprint }),
-	});
+	const response = await apiClient.post(
+		'/sync/apply',
+		{ fingerprint },
+		{ validateStatus: () => true },
+	);
 
 	if (response.status === 204) {
 		return { kind: 'nothingToDo' };
 	}
 
 	if (response.status === 409) {
-		const body = await response.json().catch(() => ({ reason: 'Conflict', detail: '' }));
+		const body = response.data || { reason: 'Conflict', detail: '' };
 		return body.reason === 'PlanExpired'
 			? { kind: 'planExpired', detail: body.detail }
 			: { kind: 'conflict', detail: body.detail };
 	}
 
-	if (!response.ok) {
-		const body = await response.json().catch(() => null);
-		return { kind: 'gitFailure', detail: body?.detail ?? body?.title ?? 'Sync failed.' };
+	if (response.status < 200 || response.status >= 300) {
+		return {
+			kind: 'gitFailure',
+			detail: response.data?.detail ?? response.data?.title ?? 'Sync failed.',
+		};
 	}
 
-	const body = await response.json();
-	return { kind: 'success', commitHash: body.commitHash };
+	return { kind: 'success', commitHash: response.data.commitHash };
 }
 
-export function getSyncHistory(): Promise<SyncCommitSummary[]> {
-	return fetch(`${API_URL}/sync/history`, { headers: authHeaders() }).then((r) => handle(r));
+export async function getSyncHistory(): Promise<SyncCommitSummary[]> {
+	const { data } = await apiClient.get<SyncCommitSummary[]>('/sync/history');
+	return data;
 }
 
-export function getSyncCommit(hash: string): Promise<SyncCommitDetail> {
-	return fetch(`${API_URL}/sync/history/${hash}`, { headers: authHeaders() }).then((r) =>
-		handle(r),
-	);
+export async function getSyncCommit(hash: string): Promise<SyncCommitDetail> {
+	const { data } = await apiClient.get<SyncCommitDetail>(`/sync/history/${hash}`);
+	return data;
 }

@@ -1,39 +1,22 @@
-import { getToken } from '@/lib/auth-token';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
+import { ApiError, apiClient } from '@/lib/api-client';
 
 export async function login(username: string, password: string): Promise<string> {
-	const response = await fetch(`${API_URL}/auth/login`, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json' },
-		body: JSON.stringify({ username, password }),
-	});
+	try {
+		const { data } = await apiClient.post<{ token: string }>('/auth/login', {
+			username,
+			password,
+		});
+		return data.token;
+	} catch (error) {
+		if (error instanceof ApiError && error.status === 401) {
+			throw new Error('Invalid username or password.');
+		}
 
-	if (response.status === 401) {
-		throw new Error('Invalid username or password.');
+		throw error;
 	}
-
-	if (!response.ok) {
-		throw new Error(`Login failed (${response.status})`);
-	}
-
-	const data = await response.json();
-	return data.token as string;
 }
 
 export async function getMe(): Promise<{ username: string }> {
-	const token = getToken();
-	if (!token) {
-		throw new Error('Not authenticated');
-	}
-
-	const response = await fetch(`${API_URL}/auth/me`, {
-		headers: { Authorization: `Bearer ${token}` },
-	});
-
-	if (!response.ok) {
-		throw new Error('Session expired.');
-	}
-
-	return response.json();
+	const { data } = await apiClient.get<{ username: string }>('/auth/me');
+	return data;
 }
