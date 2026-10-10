@@ -9,6 +9,7 @@ dotenv.config({ path: path.resolve(__dirname, '.env.e2e'), quiet: true });
 
 export default defineConfig({
 	testDir: './tests/e2e',
+	globalSetup: 'tests/e2e/global-setup.ts',
 	fullyParallel: false,
 	// The specs run against the real dev backend with no mocks (same approach as the rest of the
 	// frontend) and share the same database, so running them in parallel would race tests that
