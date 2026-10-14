@@ -39,7 +39,9 @@ async function createNote(page: Page, title: string) {
 	await page.getByRole('button', { name: 'New note' }).click();
 	await page.getByLabel('Name').fill(title);
 	await page.keyboard.press('Enter');
-	await expect(page.getByRole('link', { name: title, exact: true }).first()).toBeVisible();
+	await expect(
+		page.locator('aside').getByRole('link', { name: title, exact: true }).first(),
+	).toBeVisible();
 }
 
 //========================================
@@ -58,7 +60,7 @@ test('moves a note into a folder and back to the root', async ({ page }) => {
 	await createNote(page, title);
 
 	const folder = page.getByRole('button', { name: folderName, exact: true });
-	const note = page.getByRole('link', { name: title, exact: true });
+	const note = page.locator('aside').getByRole('link', { name: title, exact: true });
 
 	await dragTo(page, note, folder);
 	await expect(note).toHaveCSS('padding-left', '20px');
@@ -121,8 +123,11 @@ test('shows the API message when the target folder already has that title', asyn
 	await expect(page).toHaveURL(/\/notes\/[\w-]+/);
 
 	await createNote(page, title);
-	await expect(page.getByRole('link', { name: title, exact: true })).toHaveCount(2);
-	const rootNote = page.getByRole('link', { name: title, exact: true }).last();
+
+	const treeNotes = page.locator('aside').getByRole('link', { name: title, exact: true });
+	await expect(treeNotes).toHaveCount(2);
+
+	const rootNote = treeNotes.last();
 	await dragTo(page, rootNote, folder);
 
 	await expect(

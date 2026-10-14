@@ -32,7 +32,7 @@ test('copies a code block from the preview', async ({ page }) => {
 
 	await page.getByRole('button', { name: 'Preview' }).click();
 	await page.locator('.prose pre').hover();
-	await page.getByRole('button', { name: 'Copy code' }).click();
+	await page.getByRole('button', { name: 'Copy code', exact: true }).click();
 
 	await expect(page.getByRole('button', { name: 'Copied' })).toBeVisible();
 	expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(code);

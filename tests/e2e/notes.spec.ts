@@ -48,19 +48,19 @@ test('renames and deletes a note from the tree', async ({ page }) => {
 	await page.keyboard.press('Enter');
 	await expect(page).toHaveURL(/\/notes\/[\w-]+/);
 
-	const treeItem = page.getByText(title, { exact: true });
+	const treeItem = page.locator('aside').getByText(title, { exact: true });
 	await treeItem.click({ button: 'right' });
 	await page.getByRole('menuitem', { name: 'Rename' }).click();
 	await page.getByLabel('Name').fill(renamed);
 	await page.keyboard.press('Enter');
 
-	await expect(page.getByText(renamed, { exact: true })).toBeVisible();
+	await expect(page.locator('aside').getByText(renamed, { exact: true })).toBeVisible();
 
-	await page.getByText(renamed, { exact: true }).click({ button: 'right' });
+	await page.locator('aside').getByText(renamed, { exact: true }).click({ button: 'right' });
 	await page.getByRole('menuitem', { name: 'Delete' }).click();
 	await page.getByRole('button', { name: 'Delete' }).click();
 
-	await expect(page.getByText(renamed, { exact: true })).not.toBeVisible();
+	await expect(page.locator('aside').getByText(renamed, { exact: true })).not.toBeVisible();
 });
 
 //========================================
