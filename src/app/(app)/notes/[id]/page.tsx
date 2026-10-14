@@ -7,6 +7,7 @@ import ReactMarkdown from 'react-markdown';
 import { CodeBlock } from '@/components/notes/code-block';
 import { useNotesTree } from '@/components/notes/notes-context';
 import { useSync } from '@/components/notes/sync-context';
+import { useNoteTabs } from '@/components/notes/tabs-context';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { Textarea } from '@/components/ui/textarea';
@@ -32,6 +33,7 @@ function NoteEditor({ id }: { id: string }) {
 	const router = useRouter();
 	const { refreshTree, showError } = useNotesTree();
 	const { refreshStatus } = useSync();
+	const { pinTab } = useNoteTabs();
 
 	const [note, setNote] = useState<Note | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -51,6 +53,7 @@ function NoteEditor({ id }: { id: string }) {
 	}, [id, showError]);
 
 	function handleContentChange(value: string) {
+		pinTab(id);
 		setContent(value);
 		setSaveStatus('saving');
 
@@ -101,6 +104,7 @@ function NoteEditor({ id }: { id: string }) {
 		try {
 			const copy = await duplicateNote(note.id);
 			await refreshTree();
+			pinTab(copy.id);
 			void refreshStatus();
 			router.push(`/notes/${copy.id}`);
 		} catch (error) {

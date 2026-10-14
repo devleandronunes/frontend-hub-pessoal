@@ -1,10 +1,12 @@
 'use client';
 
 import { PanelLeftCloseIcon, PanelLeftIcon, XIcon } from 'lucide-react';
+import { NoteTabs } from '@/components/notes/note-tabs';
 import { NoteTree } from '@/components/notes/note-tree';
 import { NotesTreeProvider, useNotesTree } from '@/components/notes/notes-context';
 import { SyncButton } from '@/components/notes/sync-button';
 import { SyncProvider } from '@/components/notes/sync-context';
+import { NoteTabsProvider } from '@/components/notes/tabs-context';
 import { Alert, AlertAction, AlertDescription } from '@/components/ui/alert';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { usePersistentBoolean } from '@/hooks/use-persistent-boolean';
@@ -18,47 +20,51 @@ export default function NotesLayout({ children }: { children: React.ReactNode })
 	return (
 		<NotesTreeProvider>
 			<SyncProvider>
-				<TooltipProvider>
-					<div className='flex h-screen'>
-						{sidebarOpen && (
-							<aside className='w-64 shrink-0 overflow-y-auto border-border border-r-2 p-2'>
-								<NoteTree />
-							</aside>
-						)}
+				<NoteTabsProvider>
+					<TooltipProvider>
+						<div className='flex h-screen'>
+							{sidebarOpen && (
+								<aside className='w-64 shrink-0 overflow-y-auto border-border border-r-2 p-2'>
+									<NoteTree />
+								</aside>
+							)}
 
-						<div className='flex flex-1 flex-col overflow-hidden'>
-							<div className='flex items-center justify-between border-border border-b-2 p-2'>
-								<Tooltip>
-									<TooltipTrigger
-										render={
-											<button
-												type='button'
-												onClick={() => setSidebarOpen((v) => !v)}
-												aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
-												className='rounded p-1.5 hover:bg-accent'
-											>
-												{sidebarOpen ? (
-													<PanelLeftCloseIcon className='size-4' />
-												) : (
-													<PanelLeftIcon className='size-4' />
-												)}
-											</button>
-										}
-									/>
-									<TooltipContent>
-										{sidebarOpen ? 'Minimize sidebar' : 'Show sidebar'}
-									</TooltipContent>
-								</Tooltip>
+							<div className='flex flex-1 flex-col overflow-hidden'>
+								<div className='flex items-center justify-between border-border border-b-2 p-2'>
+									<Tooltip>
+										<TooltipTrigger
+											render={
+												<button
+													type='button'
+													onClick={() => setSidebarOpen((v) => !v)}
+													aria-label={sidebarOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+													className='rounded p-1.5 hover:bg-accent'
+												>
+													{sidebarOpen ? (
+														<PanelLeftCloseIcon className='size-4' />
+													) : (
+														<PanelLeftIcon className='size-4' />
+													)}
+												</button>
+											}
+										/>
+										<TooltipContent>
+											{sidebarOpen ? 'Minimize sidebar' : 'Show sidebar'}
+										</TooltipContent>
+									</Tooltip>
 
-								<SyncButton />
+									<SyncButton />
+								</div>
+
+								<NoteTabs />
+
+								<div className='flex-1 overflow-y-auto'>{children}</div>
 							</div>
-
-							<div className='flex-1 overflow-y-auto'>{children}</div>
 						</div>
-					</div>
 
-					<ErrorToast />
-				</TooltipProvider>
+						<ErrorToast />
+					</TooltipProvider>
+				</NoteTabsProvider>
 			</SyncProvider>
 		</NotesTreeProvider>
 	);

@@ -47,6 +47,7 @@ import {
 } from '@/services/notes-service';
 import { useNotesTree } from './notes-context';
 import { useSync } from './sync-context';
+import { useNoteTabs } from './tabs-context';
 import { type DragItem, TreeDndProvider, TreeRoot, useTreeItem } from './tree-dnd';
 
 type Creating = { parentId: string | null; type: 'note' | 'folder' } | null;
@@ -81,6 +82,7 @@ export function NoteTree() {
 function NoteTreeContent() {
 	const { tree, refreshTree, showError } = useNotesTree();
 	const { refreshStatus } = useSync();
+	const { pinTab } = useNoteTabs();
 	const [creating, setCreating] = useState<Creating>(null);
 	const router = useRouter();
 
@@ -99,6 +101,7 @@ function NoteTreeContent() {
 			if (creating.type === 'note') {
 				const note = await createNote(trimmed, creating.parentId);
 				await refreshTree();
+				pinTab(note.id);
 				void refreshStatus();
 				setCreating(null);
 				router.push(`/notes/${note.id}`);
