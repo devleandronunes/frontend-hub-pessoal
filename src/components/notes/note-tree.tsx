@@ -46,6 +46,7 @@ import {
 	renameNote,
 } from '@/services/notes-service';
 import { useNotesTree } from './notes-context';
+import { OpenFoldersProvider, useOpenFolders } from './open-folders-context';
 import { useSync } from './sync-context';
 import { useNoteTabs } from './tabs-context';
 import { type DragItem, TreeDndProvider, TreeRoot, useTreeItem } from './tree-dnd';
@@ -73,9 +74,11 @@ export function NoteTree() {
 	}
 
 	return (
-		<TreeDndProvider tree={tree} onMove={handleMove}>
-			<NoteTreeContent />
-		</TreeDndProvider>
+		<OpenFoldersProvider>
+			<TreeDndProvider tree={tree} onMove={handleMove}>
+				<NoteTreeContent />
+			</TreeDndProvider>
+		</OpenFoldersProvider>
 	);
 }
 
@@ -295,7 +298,8 @@ function TreeNode({
 	onRename: (id: string, type: 'note' | 'folder', name: string) => void;
 	onDelete: (id: string, type: 'note' | 'folder') => void;
 }) {
-	const [expanded, setExpanded] = useState(false);
+	const { isOpen, setOpen } = useOpenFolders();
+	const expanded = isOpen(node.id);
 	const [editing, setEditing] = useState(false);
 	const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false);
 	const params = useParams<{ id?: string }>();
@@ -307,15 +311,15 @@ function TreeNode({
 			return;
 		}
 
-		const timeout = setTimeout(() => setExpanded(true), 600);
+		const timeout = setTimeout(() => setOpen(node.id, true), 600);
 		return () => clearTimeout(timeout);
-	}, [isDropTarget, expanded]);
+	}, [isDropTarget, expanded, setOpen, node.id]);
 
 	useEffect(() => {
 		if (movedInto === node.id) {
-			setExpanded(true);
+			setOpen(node.id, true);
 		}
-	}, [movedInto, node.id]);
+	}, [movedInto, node.id, setOpen]);
 
 	const deleteDialog = (
 		<AlertDialog open={confirmDeleteOpen} onOpenChange={setConfirmDeleteOpen}>
@@ -373,7 +377,7 @@ function TreeNode({
 								{...dragProps}
 								type='button'
 								aria-expanded={expanded}
-								onClick={() => setExpanded((v) => !v)}
+								onClick={() => setOpen(node.id, !expanded)}
 								onDoubleClick={() => setEditing(true)}
 								className={cn(
 									'flex w-full items-center gap-1 rounded py-1 pr-1 text-left text-sm hover:bg-accent',
@@ -396,7 +400,7 @@ function TreeNode({
 					<ContextMenuContent>
 						<ContextMenuItem
 							onClick={() => {
-								setExpanded(true);
+								setOpen(node.id, true);
 								onStartCreate({ parentId: node.id, type: 'note' });
 							}}
 						>
@@ -404,7 +408,7 @@ function TreeNode({
 						</ContextMenuItem>
 						<ContextMenuItem
 							onClick={() => {
-								setExpanded(true);
+								setOpen(node.id, true);
 								onStartCreate({ parentId: node.id, type: 'folder' });
 							}}
 						>
