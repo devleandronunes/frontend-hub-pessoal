@@ -6,6 +6,7 @@ import { getTree, type NoteTreeNode } from '@/services/notes-service';
 type NotesTreeContextValue = {
 	tree: NoteTreeNode[];
 	loading: boolean;
+	loaded: boolean;
 	refreshTree: () => Promise<void>;
 	error: string | null;
 	showError: (message: string) => void;
@@ -17,6 +18,7 @@ const NotesTreeContext = createContext<NotesTreeContextValue | null>(null);
 export function NotesTreeProvider({ children }: { children: ReactNode }) {
 	const [tree, setTree] = useState<NoteTreeNode[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [loaded, setLoaded] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 
 	const refreshTree = useCallback(async () => {
@@ -34,7 +36,10 @@ export function NotesTreeProvider({ children }: { children: ReactNode }) {
 
 	useEffect(() => {
 		getTree()
-			.then((data) => setTree(data))
+			.then((data) => {
+				setTree(data);
+				setLoaded(true);
+			})
 			.finally(() => setLoading(false));
 	}, []);
 
@@ -48,7 +53,7 @@ export function NotesTreeProvider({ children }: { children: ReactNode }) {
 
 	return (
 		<NotesTreeContext.Provider
-			value={{ tree, loading, refreshTree, error, showError, dismissError }}
+			value={{ tree, loading, loaded, refreshTree, error, showError, dismissError }}
 		>
 			{children}
 		</NotesTreeContext.Provider>
