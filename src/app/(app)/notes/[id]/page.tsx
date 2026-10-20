@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { useMarkdownKeys } from '@/hooks/use-markdown-keys';
 import { getErrorMessage } from '@/lib/error-message';
 import {
 	duplicateNote,
@@ -34,6 +35,7 @@ function NoteEditor({ id }: { id: string }) {
 	const { refreshTree, showError } = useNotesTree();
 	const { refreshStatus } = useSync();
 	const { pinTab } = useNoteTabs();
+	const markdownKeys = useMarkdownKeys();
 
 	const [note, setNote] = useState<Note | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -213,6 +215,8 @@ function NoteEditor({ id }: { id: string }) {
 					<Textarea
 						value={content}
 						onChange={(e) => handleContentChange(e.target.value)}
+						onKeyDown={markdownKeys.onKeyDown}
+						onBlur={markdownKeys.onBlur}
 						className='min-h-full font-mono'
 						placeholder='Write markdown...'
 					/>
