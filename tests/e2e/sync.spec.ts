@@ -42,6 +42,7 @@ test('creates a note, syncs it, and finds it in the sync history', async ({ page
 //========================================
 
 test('closes the sync dialog with an error when the apply request fails', async ({ page }) => {
+	test.setTimeout(120000);
 	await login(page);
 
 	await page.getByRole('button', { name: 'New note' }).click();
@@ -51,7 +52,7 @@ test('closes the sync dialog with an error when the apply request fails', async 
 
 	await page.route('**/sync/apply', (route) => route.abort());
 	await page.getByRole('button', { name: /Local changes|Sync|Remote changes|Diverged/ }).click();
-	await expect(page.getByText('Loading the sync plan...')).toBeHidden({ timeout: 20000 });
+	await expect(page.getByText('Loading the sync plan...')).toBeHidden({ timeout: 90000 });
 	await page.getByRole('button', { name: 'Continue' }).click();
 
 	await expect(

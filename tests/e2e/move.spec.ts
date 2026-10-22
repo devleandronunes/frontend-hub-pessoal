@@ -1,5 +1,8 @@
 import { expect, type Locator, type Page, test } from '@playwright/test';
+import globalSetup from './global-setup';
 import { login, uniqueTitle } from './helpers';
+
+test.beforeAll(() => globalSetup());
 
 test.beforeEach(async ({ page }) => {
 	await login(page);
