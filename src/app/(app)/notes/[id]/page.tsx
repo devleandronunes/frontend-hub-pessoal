@@ -1,18 +1,28 @@
 'use client';
 
-import { CopyIcon, DownloadIcon, PinIcon } from 'lucide-react';
+import { ChevronDownIcon, CopyIcon, DownloadIcon, PinIcon } from 'lucide-react';
+import dynamic from 'next/dynamic';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { CodeBlock } from '@/components/notes/code-block';
 import { useNotesTree } from '@/components/notes/notes-context';
 import { useSync } from '@/components/notes/sync-context';
 import { useNoteTabs } from '@/components/notes/tabs-context';
 import { Button } from '@/components/ui/button';
+import {
+	DropdownMenu,
+	DropdownMenuContent,
+	DropdownMenuRadioGroup,
+	DropdownMenuRadioItem,
+	DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { Spinner } from '@/components/ui/spinner';
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useMarkdownKeys } from '@/hooks/use-markdown-keys';
+import { usePersistentState } from '@/hooks/use-persistent-state';
 import { getErrorMessage } from '@/lib/error-message';
 import {
 	duplicateNote,
@@ -23,7 +33,18 @@ import {
 	updateNote,
 } from '@/services/notes-service';
 
+const MarkdownEditor = dynamic(
+	() => import('@/components/notes/markdown-editor').then((module) => module.MarkdownEditor),
+	{ ssr: false, loading: () => <Spinner className='size-6' /> },
+);
+
 type SaveStatus = 'idle' | 'saving' | 'saved';
+
+type EditorKind = 'text' | 'markdown';
+
+function parseEditorKind(value: unknown): EditorKind | null {
+	return value === 'text' || value === 'markdown' ? value : null;
+}
 
 export default function NoteEditorPage() {
 	const params = useParams<{ id: string }>();
@@ -40,6 +61,11 @@ function NoteEditor({ id }: { id: string }) {
 	const [note, setNote] = useState<Note | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [mode, setMode] = useState<'preview' | 'editor'>('preview');
+	const [editorKind, setEditorKind] = usePersistentState<EditorKind>(
+		'hub-pessoal:notes-editor-kind',
+		'text',
+		parseEditorKind,
+	);
 	const [content, setContent] = useState('');
 	const [saveStatus, setSaveStatus] = useState<SaveStatus>('idle');
 	const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -148,13 +174,49 @@ function NoteEditor({ id }: { id: string }) {
 					>
 						Preview
 					</Button>
-					<Button
-						size='sm'
-						variant={mode === 'editor' ? 'default' : 'outline'}
-						onClick={() => setMode('editor')}
-					>
-						Editor
-					</Button>
+					<div className='flex'>
+						<Button
+							size='sm'
+							variant={mode === 'editor' ? 'default' : 'outline'}
+							className='rounded-r-none'
+							onClick={() => setMode('editor')}
+						>
+							Editor
+						</Button>
+						<DropdownMenu>
+							<DropdownMenuTrigger
+								render={
+									<Button
+										size='icon-sm'
+										variant={mode === 'editor' ? 'default' : 'outline'}
+										aria-label='Edit mode'
+										className='rounded-l-none border-l-0'
+									/>
+								}
+							>
+								<ChevronDownIcon />
+							</DropdownMenuTrigger>
+							<DropdownMenuContent align='start'>
+								<DropdownMenuRadioGroup
+									value={editorKind}
+									onValueChange={(value) => {
+										const kind = parseEditorKind(value);
+										if (kind) {
+											setEditorKind(kind);
+											setMode('editor');
+										}
+									}}
+								>
+									<DropdownMenuRadioItem value='text' closeOnClick>
+										Text editor
+									</DropdownMenuRadioItem>
+									<DropdownMenuRadioItem value='markdown' closeOnClick>
+										Markdown editor
+									</DropdownMenuRadioItem>
+								</DropdownMenuRadioGroup>
+							</DropdownMenuContent>
+						</DropdownMenu>
+					</div>
 					<span className='ml-2 text-muted-foreground text-xs'>
 						{saveStatus === 'saving' && 'Saving...'}
 						{saveStatus === 'saved' && 'Saved'}
@@ -211,7 +273,9 @@ function NoteEditor({ id }: { id: string }) {
 			</div>
 
 			<div className='flex-1 overflow-y-auto p-6'>
-				{mode === 'editor' ? (
+				{mode === 'editor' && editorKind === 'markdown' ? (
+					<MarkdownEditor value={content} onChange={handleContentChange} />
+				) : mode === 'editor' ? (
 					<Textarea
 						value={content}
 						onChange={(e) => handleContentChange(e.target.value)}
@@ -223,6 +287,7 @@ function NoteEditor({ id }: { id: string }) {
 				) : (
 					<div className='prose max-w-none'>
 						<ReactMarkdown
+							remarkPlugins={[remarkGfm]}
 							components={{ pre: ({ node: _node, ...props }) => <CodeBlock {...props} /> }}
 						>
 							{content}
