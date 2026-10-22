@@ -6,7 +6,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { CodeBlock } from '@/components/notes/code-block';
+import { MarkdownPre } from '@/components/notes/markdown-pre';
 import { useNotesTree } from '@/components/notes/notes-context';
 import { useSync } from '@/components/notes/sync-context';
 import { useNoteTabs } from '@/components/notes/tabs-context';
@@ -288,7 +288,7 @@ function NoteEditor({ id }: { id: string }) {
 					<div className='prose max-w-none'>
 						<ReactMarkdown
 							remarkPlugins={[remarkGfm]}
-							components={{ pre: ({ node: _node, ...props }) => <CodeBlock {...props} /> }}
+							components={{ pre: ({ node: _node, ...props }) => <MarkdownPre {...props} /> }}
 						>
 							{content}
 						</ReactMarkdown>
