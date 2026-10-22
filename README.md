@@ -99,6 +99,18 @@ Ou passe direto na linha de comando (tem prioridade sobre o `.env.e2e`):
 E2E_USERNAME=<usuário-seed> E2E_PASSWORD=<senha-seed> npm run test:e2e
 ```
 
+### Limpeza do banco de desenvolvimento
+
+Antes de cada execução, os testes **apagam as notas, pastas e o histórico de sync do banco de desenvolvimento** (`TRUNCATE` pelo `docker exec`; o usuário e as migrations ficam). O banco de desenvolvimento é descartável: o que precisar guardar deve ficar no banco de produção.
+
+A limpeza só roda quando a API do frontend é local e o banco termina em `_dev`. Para pular a limpeza (por exemplo, para reexecutar um teste em cima dos dados que ele deixou):
+
+```bash
+E2E_KEEP_DATA=1 npx playwright test
+```
+
+Se o container do banco tiver outro nome, usuário ou banco, ajuste `E2E_DB_CONTAINER`, `E2E_DB_USER` e `E2E_DB_NAME` no `.env.e2e`.
+
 ---
 
 <p align="center"><sub>Versão do módulo em <code>version.config</code>. Documentação de arquitetura e decisões de projeto vivem fora deste repositório.</sub></p>
